@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
+import { withBasePath } from "@/lib/basePath";
 
 type PR = {
   title: string;
@@ -51,7 +52,7 @@ export function GitHubContributions() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/github/prs");
+        const res = await fetch(withBasePath("/api/github/prs"));
         const j = await res.json();
         if (!cancelled) setPrs(j.prs ?? []);
       } catch {

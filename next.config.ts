@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
+const basePath = "/portfolio";
+
 const nextConfig: NextConfig = {
-  /* config options here */
   output: "export",
   trailingSlash: true,
-  basePath: "/port",
+  basePath,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   images: {
     unoptimized: true,
   },

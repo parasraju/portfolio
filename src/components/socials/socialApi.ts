@@ -1,5 +1,7 @@
 // Real-data social adapters — no fake stats, no scraping.
 
+import { withBasePath } from "@/lib/basePath";
+
 export type NormalizedProfile = {
   platform: "github" | "twitter" | "linkedin" | "discord";
   avatar: string | null;
@@ -18,8 +20,8 @@ export type NormalizedProfile = {
 
 // --- config — replace with your actual usernames ---
 // Homepage banner/logo used for every hover card — keeps UI consistent
-const HOMEPAGE_BANNER = "/assets/bg-black.png";
-const HOMEPAGE_AVATAR = "/assets/avatar.png";
+const HOMEPAGE_BANNER = withBasePath("/assets/bg-black.webp");
+const HOMEPAGE_AVATAR = withBasePath("/assets/avatar.webp");
 
 export const SOCIAL_CONFIG = {
   github: { username: "parasraju", url: "https://github.com/parasraju", banner: HOMEPAGE_BANNER as string | null, avatarFallback: HOMEPAGE_AVATAR as string | null },

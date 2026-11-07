@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
+import { withBasePath } from "@/lib/basePath";
 import { GitHubContributions } from "./GitHubContributions";
 
 type Day = { date: string; count: number };
@@ -64,7 +65,7 @@ export function GitHubActivity() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/github/contributions");
+        const res = await fetch(withBasePath("/api/github/contributions"));
         if (!res.ok) throw new Error(String(res.status));
         const j = await res.json();
         if (j.error && (!j.weeks || j.weeks.length === 0)) throw new Error(j.error);

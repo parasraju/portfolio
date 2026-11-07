@@ -1,7 +1,7 @@
 ﻿/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
-import { Search, Calendar, ArrowUpRight, Moon, Sun } from "lucide-react";
+import { withBasePath } from "@/lib/basePath";
 import { SocialsSection } from "@/components/socials/SocialButton";
 import { ExperienceAccordion } from "@/components/experiences/ExperienceAccordion";
 import { GitHubActivity } from "@/components/github/GitHubActivity";
@@ -13,6 +13,57 @@ const sections = [
   { id: "skills", label: "Skills" },
   { id: "blogs", label: "Blog" },
 ];
+
+function Icon({ className, children }: { className?: string; children: React.ReactNode }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className={className}
+    >
+      {children}
+    </svg>
+  );
+}
+
+const SearchIcon = ({ className }: { className?: string }) => (
+  <Icon className={className}>
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
+  </Icon>
+);
+
+const CalendarIcon = ({ className }: { className?: string }) => (
+  <Icon className={className}>
+    <rect width="18" height="18" x="3" y="4" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </Icon>
+);
+
+const ArrowUpRightIcon = ({ className }: { className?: string }) => (
+  <Icon className={className}>
+    <path d="M7 7h10v10" />
+    <path d="M7 17 17 7" />
+  </Icon>
+);
+
+const MoonIcon = ({ className }: { className?: string }) => (
+  <Icon className={className}>
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+  </Icon>
+);
+
+const SunIcon = ({ className }: { className?: string }) => (
+  <Icon className={className}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </Icon>
+);
 
 export default function Home() {
   const [active, setActive] = useState("");
@@ -101,8 +152,8 @@ export default function Home() {
 
       {/* Header banner background — bg-white / bg-black */}
       <div className="absolute left-0 right-0 md:left-[30%] md:right-[30%] top-0 h-[22vh] -z-0 overflow-hidden bg-white dark:bg-black shadow-[0_4px_12px_rgba(2,6,23,0.04)]">
-        <img src="/assets/bg-white.png" alt="" className="absolute inset-0 w-full h-full object-cover object-center dark:hidden" />
-        <img src="/assets/bg-black.png" alt="" className="absolute inset-0 w-full h-full object-cover object-center hidden dark:block" />
+        <img src={withBasePath("/assets/bg-white.webp")} alt="" width={1600} height={533} fetchPriority="high" className="absolute inset-0 w-full h-full object-cover object-center dark:hidden" />
+        <img src={withBasePath("/assets/bg-black.webp")} alt="" width={1600} height={533} className="absolute inset-0 w-full h-full object-cover object-center hidden dark:block" />
         <div className="absolute inset-0 pointer-events-none z-[5] bg-gradient-to-t from-white/80 to-transparent dark:from-black/40" />
         <div className="absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-20 bg-gradient-to-r from-white/60 to-transparent dark:from-black/30" />
         <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-20 bg-gradient-to-l from-white/60 to-transparent dark:from-black/30" />
@@ -117,7 +168,7 @@ export default function Home() {
           <div className="flex items-center gap-4 sm:gap-5">
             <div className="relative p-[3px] rounded-[6px] sm:rounded-[8px] border-[1.5px] border-black/30 dark:border-white/[0.15] shrink-0 bg-white dark:bg-black">
               <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-[3px] sm:rounded-[5px] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                <img src="/assets/avatar.png" alt="Profile" className="h-full w-full origin-center translate-y-1 scale-[1.1] object-cover opacity-90 grayscale contrast-100 mix-blend-multiply dark:mix-blend-normal" />
+                <img src={withBasePath("/assets/avatar.webp")} alt="Profile" width={256} height={233} className="h-full w-full origin-center translate-y-1 scale-[1.1] object-cover opacity-90 grayscale contrast-100 mix-blend-multiply dark:mix-blend-normal" />
               </div>
             </div>
             <div className="flex flex-col justify-center">
@@ -135,7 +186,7 @@ export default function Home() {
             <button suppressHydrationWarning onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Toggle dark mode">
               <div className="absolute -inset-[4.5px] border border-black/5 dark:border-white/5 rounded-[9px] pointer-events-none transition-colors group-hover:border-black/10 dark:group-hover:border-white/10" />
               <div className="relative flex items-center justify-center w-[32px] h-[28px] bg-zinc-50 hover:bg-zinc-100 dark:bg-[#09090b] dark:hover:bg-[#121214] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] transition-colors border border-black/5 dark:border-white/5 shadow-sm">
-                <span suppressHydrationWarning>{theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}</span>
+                <span suppressHydrationWarning>{theme === "dark" ? <SunIcon className="w-3.5 h-3.5" /> : <MoonIcon className="w-3.5 h-3.5" />}</span>
               </div>
             </button>
           </div>
@@ -158,10 +209,10 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-2 mt-5 max-w-full">
             <a href="https://cal.com/paras-raju/meeting" target="_blank" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-[12px] font-medium hover:opacity-90 transition-opacity">
-              <Calendar className="w-3.5 h-3.5" /> Book an intro call <span className="text-white/60 dark:text-zinc-500 text-[10px]">cal.com</span>
+              <CalendarIcon className="w-3.5 h-3.5" /> Book an intro call <span className="text-white/60 dark:text-zinc-500 text-[10px]">cal.com</span>
             </a>
             <a href="mailto:rajuparas766@gmail.com" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-[12px] font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-              Send an email <ArrowUpRight className="w-3 h-3" />
+              Send an email <ArrowUpRightIcon className="w-3 h-3" />
             </a>
           </div>
           <SocialsSection />
@@ -202,11 +253,11 @@ export default function Home() {
               ["React","https://cdn.simpleicons.org/react/71717a"],["Node.js","https://cdn.simpleicons.org/nodedotjs/71717a"],["Redis","https://cdn.simpleicons.org/redis/71717a"],["TanStack Query","https://cdn.simpleicons.org/reactquery/71717a"],["Tailwind CSS","https://cdn.simpleicons.org/tailwindcss/71717a"],["shadcn/ui","https://cdn.simpleicons.org/shadcnui/71717a"],["Motion","https://cdn.simpleicons.org/framer/71717a"],["JavaScript","https://cdn.simpleicons.org/javascript/71717a"],["TypeScript","https://cdn.simpleicons.org/typescript/71717a"],["Python","https://cdn.simpleicons.org/python/71717a"],["C / C++","https://cdn.simpleicons.org/cplusplus/71717a"],["SQL","https://cdn.simpleicons.org/mysql/71717a"],["Git","https://cdn.simpleicons.org/git/71717a"],["GitHub","https://cdn.simpleicons.org/github/71717a"],["Figma","https://cdn.simpleicons.org/figma/71717a"],["Docker","https://cdn.simpleicons.org/docker/71717a"],
             ].map(([label, src]) => (
               <span key={label} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[6px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[12px] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
-                <img src={src} alt={label} width={14} height={14} className="h-3.5 w-3.5 opacity-80" /> {label}
+                <img src={src} alt={label} width={14} height={14} loading="lazy" decoding="async" className="h-3.5 w-3.5 opacity-80" /> {label}
               </span>
             ))}
             <span className="inline-flex items-center gap-1.5 px-6 py-1.5 rounded-[6px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[12px] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors w-full justify-center">
-              <img src="https://cdn.simpleicons.org/linux/71717a" alt="Linux" width={14} height={14} className="h-3.5 w-3.5 opacity-80" /> Linux
+              <img src="https://cdn.simpleicons.org/linux/71717a" alt="Linux" width={14} height={14} loading="lazy" decoding="async" className="h-3.5 w-3.5 opacity-80" /> Linux
             </span>
           </div>
         </section>
@@ -253,7 +304,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setCmdOpen(false)} />
           <div className="relative w-full max-w-[560px] rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
-              <Search className="w-4 h-4 text-zinc-400" />
+              <SearchIcon className="w-4 h-4 text-zinc-400" />
               <input autoFocus placeholder="Search for a command to run..." className="flex-1 bg-transparent outline-none text-[13px] placeholder:text-zinc-400" />
               <span className="text-[11px] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500">ESC</span>
             </div>

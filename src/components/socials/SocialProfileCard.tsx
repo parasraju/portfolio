@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import type { NormalizedProfile } from "./socialApi";
+import { withBasePath } from "@/lib/basePath";
 
 const PLATFORM_CTA: Record<NormalizedProfile["platform"], string> = {
   github: "GitHub",
@@ -22,13 +23,13 @@ const CTA_CLASS =
 function Cover() {
   return (
     <div className={COVER_CLASS}>
-      <img src="/assets/bg-black.png" alt="" className="h-full w-full object-cover" />
+      <img src={withBasePath("/assets/bg-black.webp")} alt="" width={1600} height={533} className="h-full w-full object-cover" />
     </div>
   );
 }
 
 function Avatar() {
-  return <img src="/assets/avatar.png" alt="" className={AVATAR_CLASS} />;
+  return <img src={withBasePath("/assets/avatar.webp")} alt="" width={256} height={233} className={AVATAR_CLASS} />;
 }
 
 function StatRow({ profile }: { profile: NormalizedProfile }) {
@@ -104,8 +105,8 @@ export function SocialProfileCard({
     );
   }
 
-  const avatarImgSrc = profile.avatar ?? "/assets/avatar.png";
-  const bannerImgSrc = profile.banner ?? "/assets/bg-black.png";
+  const avatarImgSrc = profile.avatar ?? withBasePath("/assets/avatar.webp");
+  const bannerImgSrc = profile.banner ?? withBasePath("/assets/bg-black.webp");
   const location = profile.location;
 
   return (
