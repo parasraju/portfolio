@@ -1,5 +1,6 @@
 import { npmPackages, projects } from "./projectsData";
 import { Reveal } from "@/components/ui/Reveal";
+import { ProjectCover } from "./ProjectCover";
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -38,7 +39,10 @@ function DownloadIcon({ className }: { className?: string }) {
 
 function ProjectCard({ project, index }: { project: (typeof projects)[number]; index: number }) {
   return (
-    <article style={{ "--i": index } as React.CSSProperties} className="group relative flex h-full flex-col rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c] p-4 hover:-translate-y-0.5 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+    <article style={{ "--i": index } as React.CSSProperties} className="group relative flex h-full flex-col overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c] p-4 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
+      <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" tabIndex={-1} className="-mx-4 -mt-4 mb-4 block overflow-hidden border-b border-zinc-200 dark:border-zinc-800">
+        <ProjectCover slug={project.slug} title={project.name} />
+      </a>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-[13px] font-bold text-zinc-700 dark:text-zinc-300">
@@ -116,10 +120,11 @@ export function ProjectsSection() {
           </a>
         </div>
 
-        <div className="mt-2 overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c]">
-          {npmPackages.map((pkg) => (
+        <Reveal stagger delay={80} className="mt-2 overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c]">
+          {npmPackages.map((pkg, i) => (
             <a
               key={pkg.name}
+              style={{ "--i": i } as React.CSSProperties}
               href={pkg.npmUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -144,7 +149,7 @@ export function ProjectsSection() {
               <ArrowUpRightIcon className="h-3.5 w-3.5 shrink-0 text-zinc-300 transition-colors group-hover:text-zinc-700 dark:text-zinc-600 dark:group-hover:text-zinc-300" />
             </a>
           ))}
-        </div>
+        </Reveal>
       </Reveal>
     </section>
   );

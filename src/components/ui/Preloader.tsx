@@ -12,7 +12,12 @@ const DASH_H = {
   WebkitMaskImage: "repeating-linear-gradient(to right, black 0, black 1px, transparent 1px, transparent 6px)",
 };
 
+const NAME = "PARAS RAJU";
+const STAGES = ["Booting up", "Fetching assets", "Compiling ideas", "Polishing pixels", "Ready"];
+
 type Phase = "loading" | "exiting" | "done";
+
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 export function Preloader() {
   const { finish } = useLoading();
@@ -23,12 +28,11 @@ export function Preloader() {
     let seen = false;
     try {
       seen = sessionStorage.getItem(PRELOADER_SEEN_KEY) === "1";
-    } catch {
-    }
+    } catch {}
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const duration = reduceMotion ? 250 : 1500;
-    const holdMs = reduceMotion ? 0 : 220;
-    const exitMs = reduceMotion ? 300 : 900;
+    const duration = reduceMotion ? 400 : 3600;
+    const holdMs = reduceMotion ? 0 : 650;
+    const exitMs = reduceMotion ? 300 : 1600;
 
     let raf = 0;
     let hold: number | undefined;
@@ -42,16 +46,14 @@ export function Preloader() {
         return;
       }
       const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3.2);
-      setProgress(Math.round(eased * 100));
+      setProgress(Math.round(easeInOut(t) * 100));
       if (t < 1) {
         raf = requestAnimationFrame(tick);
         return;
       }
       try {
         sessionStorage.setItem(PRELOADER_SEEN_KEY, "1");
-      } catch {
-      }
+      } catch {}
       hold = window.setTimeout(() => {
         setPhase("exiting");
         finish();
@@ -69,6 +71,9 @@ export function Preloader() {
 
   if (phase === "done") return null;
 
+  const stage = progress >= 100 ? STAGES.length - 1 : Math.min(Math.floor(progress / 25), STAGES.length - 2);
+  const counter = String(progress).padStart(3, "0");
+
   return (
     <div
       id="preloader"
@@ -80,33 +85,46 @@ export function Preloader() {
       <div className="absolute inset-x-0 top-[22vh] h-0 border-b border-black/25 dark:border-white/[0.14]" style={DASH_H} />
       <div className="absolute inset-x-0 bottom-[22vh] h-0 border-b border-black/25 dark:border-white/[0.14]" style={DASH_H} />
 
-      <div className="absolute inset-x-0 bottom-[22vh] h-px origin-left bg-zinc-900 transition-transform duration-150 ease-out dark:bg-zinc-100" style={{ transform: `scaleX(${progress / 100})` }} />
+      <div className="absolute inset-x-0 bottom-[22vh] h-px origin-left bg-zinc-900 dark:bg-zinc-100" style={{ transform: `scaleX(${progress / 100})` }} />
 
       <div className="absolute top-6 left-5 sm:left-8 md:left-[calc(30%+24px)] text-[10px] font-semibold uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
-        Paras Raju
+        Portfolio — {new Date().getFullYear()}
       </div>
       <div className="absolute top-6 right-5 sm:right-8 md:right-[calc(30%+24px)] flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-zinc-900 dark:bg-zinc-100" />
         Loading
       </div>
 
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-5">
+        <div className="flex overflow-hidden text-[12px] font-semibold tracking-[0.5em] text-zinc-500 dark:text-zinc-400 sm:text-[13px]">
+          {NAME.split("").map((ch, i) => (
+            <span key={i} className="preloader-letter" style={{ "--i": i } as React.CSSProperties}>
+              {ch === " " ? "\u00a0" : ch}
+            </span>
+          ))}
+        </div>
         <div
           className="select-none text-[96px] leading-none tracking-[0.08em] tabular-nums sm:text-[150px] md:text-[180px]"
           style={{ fontFamily: "var(--font-doto), monospace", fontWeight: 700 }}
         >
-          {String(progress).padStart(3, "0")}
+          {counter}
+        </div>
+        <div className="h-[2px] w-40 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800 sm:w-56">
+          <div className="h-full origin-left rounded-full bg-zinc-900 dark:bg-zinc-100" style={{ transform: `scaleX(${progress / 100})` }} />
         </div>
       </div>
 
-      <div className="absolute bottom-[calc(22vh-28px)] left-5 sm:left-8 md:left-[calc(30%+24px)] text-[10px] uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
-        Engineer · Portfolio
+      <div className="absolute bottom-[calc(22vh-28px)] left-5 sm:left-8 md:left-[calc(30%+24px)] overflow-hidden text-[10px] uppercase tracking-[0.28em] text-zinc-500 dark:text-zinc-400">
+        <span key={stage} className="preloader-stage inline-block">
+          {STAGES[stage]}
+          {stage < STAGES.length - 1 && <span className="animate-pulse">…</span>}
+        </span>
       </div>
       <div
         className="absolute bottom-[calc(22vh-28px)] right-5 sm:right-8 md:right-[calc(30%+24px)] text-[11px] tracking-[0.2em] text-zinc-500 dark:text-zinc-400"
         style={{ fontFamily: "var(--font-doto), monospace", fontWeight: 700 }}
       >
-        {String(progress).padStart(3, "0")}%
+        {counter}%
       </div>
     </div>
   );

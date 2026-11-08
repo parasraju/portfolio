@@ -10,6 +10,29 @@ import { ProjectsSection } from "@/components/projects/ProjectsSection";
 import { BlogSection } from "@/components/blog/BlogSection";
 import { SearchPalette } from "@/components/search/SearchPalette";
 import { Reveal } from "@/components/ui/Reveal";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+
+const SKILLS: [string, string][] = [
+  ["React","https://cdn.simpleicons.org/react/71717a"],
+  ["Node.js","https://cdn.simpleicons.org/nodedotjs/71717a"],
+  ["Redis","https://cdn.simpleicons.org/redis/71717a"],
+  ["TanStack Query","https://cdn.simpleicons.org/reactquery/71717a"],
+  ["Tailwind CSS","https://cdn.simpleicons.org/tailwindcss/71717a"],
+  ["shadcn/ui","https://cdn.simpleicons.org/shadcnui/71717a"],
+  ["Motion","https://cdn.simpleicons.org/framer/71717a"],
+  ["JavaScript","https://cdn.simpleicons.org/javascript/71717a"],
+  ["TypeScript","https://cdn.simpleicons.org/typescript/71717a"],
+  ["Python","https://cdn.simpleicons.org/python/71717a"],
+  ["C / C++","https://cdn.simpleicons.org/cplusplus/71717a"],
+  ["SQL","https://cdn.simpleicons.org/mysql/71717a"],
+  ["Git","https://cdn.simpleicons.org/git/71717a"],
+  ["GitHub","https://cdn.simpleicons.org/github/71717a"],
+  ["Figma","https://cdn.simpleicons.org/figma/71717a"],
+  ["Docker","https://cdn.simpleicons.org/docker/71717a"],
+  ["Linux","https://cdn.simpleicons.org/linux/71717a"],
+];
+
+const SKILL_ROWS = [SKILLS.slice(0, 9), SKILLS.slice(9)];
 
 function Icon({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
@@ -137,6 +160,13 @@ export default function Home() {
       <div className="grid-dot absolute w-[2px] h-[2px] bg-black/50 dark:bg-white/[0.25] pointer-events-none z-10 hidden md:block" style={{ top: "22vh", right: "30%", transform: "translate(50%, -50%)" }} />
       <div className="grid-dot absolute w-[2px] h-[2px] bg-black/50 dark:bg-white/[0.25] pointer-events-none z-10 hidden md:block" style={{ top: "calc(22vh + 112px)", left: "30%", transform: "translate(-50%, -50%)" }} />
       <div className="grid-dot absolute w-[2px] h-[2px] bg-black/50 dark:bg-white/[0.25] pointer-events-none z-10 hidden md:block" style={{ top: "calc(22vh + 112px)", right: "30%", transform: "translate(50%, -50%)" }} />
+      <div className="beam-h absolute left-0 right-0 top-[22vh] h-px pointer-events-none" />
+      <div className="beam-h beam-h-alt absolute left-0 right-0 top-[calc(22vh+112px)] h-px pointer-events-none" />
+      <div className="fixed inset-0 pointer-events-none hidden md:block">
+        <div className="beam-v absolute top-0 bottom-0 left-[30%] w-px" />
+        <div className="beam-v beam-v-alt absolute top-0 bottom-0 right-[30%] w-px" />
+      </div>
+      <ScrollProgress />
 
       {/* Index nav */}
       <div className="fixed inset-0 z-50 pointer-events-none hidden lg:block" style={{ width: "calc(100vw - var(--removed-body-scroll-bar-size, 0px))" }}>
@@ -153,8 +183,10 @@ export default function Home() {
 
       {/* Header banner background — bg-white / bg-black */}
       <div className="absolute left-0 right-0 md:left-[30%] md:right-[30%] top-0 h-[22vh] -z-0 overflow-hidden bg-white dark:bg-black shadow-[0_4px_12px_rgba(2,6,23,0.04)]">
+        <div className="banner-drift absolute inset-0">
         <img src={withBasePath("/assets/bg-white.webp")} alt="" width={1600} height={533} fetchPriority="high" className="banner-img absolute inset-0 w-full h-full object-cover object-center dark:hidden" />
         <img src={withBasePath("/assets/bg-black.webp")} alt="" width={1600} height={533} className="banner-img absolute inset-0 w-full h-full object-cover object-center hidden dark:block" />
+        </div>
         <div className="absolute inset-0 pointer-events-none z-[5] bg-gradient-to-t from-white/80 to-transparent dark:from-black/40" />
         <div className="absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-20 bg-gradient-to-r from-white/60 to-transparent dark:from-black/30" />
         <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-20 bg-gradient-to-l from-white/60 to-transparent dark:from-black/30" />
@@ -175,7 +207,7 @@ export default function Home() {
               </div>
             </Reveal>
             <Reveal delay={90} className="flex flex-col justify-center">
-              <h1 className="text-[20px] sm:text-[24px] font-bold text-zinc-800 dark:text-zinc-100 tracking-tight leading-none mb-0.5 [text-shadow:-1.5px_0_0_rgba(0,200,255,0.3),1.5px_0_0_rgba(255,80,0,0.3)] dark:[text-shadow:-1.5px_0_0_rgba(0,200,255,0.6),1.5px_0_0_rgba(255,80,0,0.6)]">Paras Raju</h1>
+              <h1 className="text-[20px] sm:text-[24px] font-bold text-zinc-800 dark:text-zinc-100 tracking-tight leading-none mb-0.5 [text-shadow:-1.5px_0_0_rgba(0,200,255,0.3),1.5px_0_0_rgba(255,80,0,0.3)] dark:[text-shadow:-1.5px_0_0_rgba(0,200,255,0.6),1.5px_0_0_rgba(255,80,0,0.6)]"><span className="name-glitch">Paras Raju</span></h1>
               <p className="text-[13px] sm:text-[14px] text-zinc-500 dark:text-zinc-400">20</p>
             </Reveal>
           </div>
@@ -218,7 +250,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={360}>
           <p className="text-[13px] text-zinc-500 dark:text-zinc-400 mt-3">
-            Currently building <a href="https://github.com/parasraju/LeakedAPIs" target="_blank" className="font-semibold text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300">ApiInstructor</a>, <a href="https://github.com/parasraju/locus" target="_blank" className="font-semibold text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300">Locus</a>, <a href="https://www.npmjs.com/package/hexlens" target="_blank" className="font-semibold text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300">Hexlens</a>, and a collection of experimental Python tools.
+            <span className="relative mr-2 inline-flex h-1.5 w-1.5 align-middle"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60 motion-reduce:animate-none" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" /></span>Currently building <a href="https://github.com/parasraju/LeakedAPIs" target="_blank" className="font-semibold text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300">ApiInstructor</a>, <a href="https://github.com/parasraju/locus" target="_blank" className="font-semibold text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300">Locus</a>, <a href="https://www.npmjs.com/package/hexlens" target="_blank" className="font-semibold text-zinc-900 dark:text-zinc-100 underline decoration-dotted underline-offset-4 hover:text-zinc-700 dark:hover:text-zinc-300">Hexlens</a>, and a collection of experimental Python tools.
           </p>
           </Reveal>
           <Reveal delay={420}>
@@ -241,9 +273,7 @@ export default function Home() {
           <Reveal>
             <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white mb-4">Experiences</h2>
           </Reveal>
-          <Reveal delay={80}>
-            <ExperienceAccordion />
-          </Reveal>
+          <ExperienceAccordion />
         </section>
 
         <ProjectsSection />
@@ -257,17 +287,20 @@ export default function Home() {
           <Reveal>
             <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white mb-3">Skills &amp; Technologies</h2>
           </Reveal>
-          <Reveal stagger className="flex flex-wrap gap-2">
-            {[
-              ["React","https://cdn.simpleicons.org/react/71717a"],["Node.js","https://cdn.simpleicons.org/nodedotjs/71717a"],["Redis","https://cdn.simpleicons.org/redis/71717a"],["TanStack Query","https://cdn.simpleicons.org/reactquery/71717a"],["Tailwind CSS","https://cdn.simpleicons.org/tailwindcss/71717a"],["shadcn/ui","https://cdn.simpleicons.org/shadcnui/71717a"],["Motion","https://cdn.simpleicons.org/framer/71717a"],["JavaScript","https://cdn.simpleicons.org/javascript/71717a"],["TypeScript","https://cdn.simpleicons.org/typescript/71717a"],["Python","https://cdn.simpleicons.org/python/71717a"],["C / C++","https://cdn.simpleicons.org/cplusplus/71717a"],["SQL","https://cdn.simpleicons.org/mysql/71717a"],["Git","https://cdn.simpleicons.org/git/71717a"],["GitHub","https://cdn.simpleicons.org/github/71717a"],["Figma","https://cdn.simpleicons.org/figma/71717a"],["Docker","https://cdn.simpleicons.org/docker/71717a"],
-            ].map(([label, src], i) => (
-              <span key={label} style={{ "--i": i } as React.CSSProperties} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[6px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[12px] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-px">
-                <img src={src} alt={label} width={14} height={14} loading="lazy" decoding="async" className="h-3.5 w-3.5 opacity-80" /> {label}
-              </span>
+          <Reveal className="space-y-2">
+            {SKILL_ROWS.map((row, r) => (
+              <div key={r} className={`marquee${r ? " marquee-reverse" : ""}`}>
+                <div className="marquee-track">
+                  {[0, 1].map((copy) =>
+                    row.map(([label, src]) => (
+                      <span key={`${copy}-${label}`} aria-hidden={copy === 1 ? "true" : undefined} className="inline-flex shrink-0 items-center gap-1.5 px-3.5 py-1.5 rounded-[6px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[12px] text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700">
+                        <img src={src} alt={copy === 1 ? "" : label} width={14} height={14} loading="lazy" decoding="async" className="h-3.5 w-3.5 opacity-80" /> {label}
+                      </span>
+                    ))
+                  )}
+                </div>
+              </div>
             ))}
-            <span style={{ "--i": 16 } as React.CSSProperties} className="inline-flex items-center gap-1.5 px-6 py-1.5 rounded-[6px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[12px] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-px w-full justify-center">
-              <img src="https://cdn.simpleicons.org/linux/71717a" alt="Linux" width={14} height={14} loading="lazy" decoding="async" className="h-3.5 w-3.5 opacity-80" /> Linux
-            </span>
           </Reveal>
         </section>
 

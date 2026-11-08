@@ -25,7 +25,7 @@ export function Reveal({ children, className = "", delay = 0, stagger = false, i
           obs.disconnect();
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.05 }
+      { rootMargin: "0px 0px -12% 0px", threshold: 0 }
     );
     obs.observe(el);
     return () => obs.disconnect();

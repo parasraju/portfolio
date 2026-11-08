@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { experiences, type Experience } from "./experiencesData";
+import { Reveal } from "@/components/ui/Reveal";
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -18,9 +19,9 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-function ExperienceRow({ exp, isOpen, onToggle }: { exp: Experience; isOpen: boolean; onToggle: () => void }) {
+function ExperienceRow({ exp, index, isOpen, onToggle }: { exp: Experience; index: number; isOpen: boolean; onToggle: () => void }) {
   return (
-    <div className="border-b border-dashed border-zinc-200 dark:border-zinc-800 last:border-b-0">
+    <div style={{ "--i": index } as React.CSSProperties} className="border-b border-dashed border-zinc-200 dark:border-zinc-800 last:border-b-0">
       {/* Collapsed header — clickable */}
       <button
         onClick={onToggle}
@@ -136,10 +137,10 @@ export function ExperienceAccordion() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <div className="w-full">
-      {experiences.map((exp) => (
-        <ExperienceRow key={exp.id} exp={exp} isOpen={openId === exp.id} onToggle={() => setOpenId((v) => (v === exp.id ? null : exp.id))} />
+    <Reveal stagger delay={80} className="w-full">
+      {experiences.map((exp, i) => (
+        <ExperienceRow key={exp.id} exp={exp} index={i} isOpen={openId === exp.id} onToggle={() => setOpenId((v) => (v === exp.id ? null : exp.id))} />
       ))}
-    </div>
+    </Reveal>
   );
 }
