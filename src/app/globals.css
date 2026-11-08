@@ -94,7 +94,12 @@
 
 :root {
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+  --beam: rgb(24 24 27 / 0.55);
+}
+.dark {
+  --beam: rgb(255 255 255 / 0.55);
 }
 
 @layer components {
@@ -107,51 +112,90 @@
       transform: translateY(-100%);
     }
   }
-
+  @keyframes preloader-content-out {
+    to {
+      opacity: 0;
+      transform: translateY(-48px);
+    }
+  }
   @keyframes fade-out {
     to {
       opacity: 0;
     }
   }
+  @keyframes letter-rise {
+    from {
+      transform: translateY(110%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes stage-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
   .preloader-exit {
-    animation: preloader-curtain 0.9s var(--ease-curtain) forwards;
+    animation: preloader-curtain 1.3s var(--ease-curtain) 0.25s forwards;
   }
   .preloader-exit > * {
-    animation: fade-out 0.35s ease forwards;
+    animation: preloader-content-out 0.7s var(--ease-curtain) forwards;
+  }
+  .preloader-letter {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: letter-rise 1s var(--ease-reveal) forwards;
+    animation-delay: calc(200ms + var(--i, 0) * 80ms);
+  }
+  .preloader-stage {
+    animation: stage-in 0.6s var(--ease-reveal);
   }
 
   .reveal,
   .reveal-stagger > * {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(48px) scale(0.98);
+    filter: blur(6px);
     transition:
-      opacity 0.8s var(--ease-out-expo),
-      transform 0.8s var(--ease-out-expo),
+      opacity 1s var(--ease-reveal),
+      transform 1.2s var(--ease-reveal),
+      filter 1s var(--ease-reveal),
       background-color 0.3s ease,
       border-color 0.3s ease,
       color 0.3s ease,
-      box-shadow 0.3s ease;
+      box-shadow 0.3s ease,
+      translate 0.3s ease;
   }
   .reveal {
     transition-delay: var(--reveal-delay, 0ms);
   }
   .reveal-stagger > * {
-    transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 55ms);
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 110ms), calc(var(--reveal-delay, 0ms) + var(--i, 0) * 110ms),
+      calc(var(--reveal-delay, 0ms) + var(--i, 0) * 110ms), 0s, 0s, 0s, 0s, 0s;
   }
   .reveal.is-visible,
   .reveal-stagger.is-visible > * {
     opacity: 1;
     transform: none;
+    filter: none;
   }
 
   .grid-line-v,
   .grid-line-h,
   .grid-dot,
   .index-nav,
-  .banner-img {
+  .banner-img,
+  .beam-v,
+  .beam-h {
     transition:
-      transform 1.4s var(--ease-out-expo),
-      opacity 0.9s var(--ease-out-expo);
+      transform 1.6s var(--ease-out-expo),
+      opacity 1s var(--ease-out-expo);
   }
   .grid-line-v {
     transform: scaleY(0);
@@ -174,6 +218,11 @@
     opacity: 0;
     transform: scale(1.08);
   }
+  .beam-v,
+  .beam-h {
+    opacity: 0;
+    transition-delay: 1.4s;
+  }
   .is-loaded .grid-line-v {
     transform: scaleY(1);
   }
@@ -181,13 +230,227 @@
     transform: scaleX(1);
   }
   .is-loaded .grid-dot,
-  .is-loaded .banner-img {
+  .is-loaded .banner-img,
+  .is-loaded .index-nav,
+  .is-loaded .beam-v,
+  .is-loaded .beam-h {
     opacity: 1;
     transform: none;
   }
-  .is-loaded .index-nav {
-    opacity: 1;
-    transform: none;
+
+  @keyframes beam-y {
+    from {
+      background-position: 0 -30%;
+    }
+    to {
+      background-position: 0 130%;
+    }
+  }
+  @keyframes beam-x {
+    from {
+      background-position: -30% 0;
+    }
+    to {
+      background-position: 130% 0;
+    }
+  }
+  .beam-v {
+    background: linear-gradient(to bottom, transparent, var(--beam), transparent) no-repeat;
+    background-size: 1px 22%;
+    animation: beam-y 7s linear infinite;
+  }
+  .beam-v-alt {
+    animation-duration: 9s;
+    animation-delay: -4.5s;
+  }
+  .beam-h {
+    background: linear-gradient(to right, transparent, var(--beam), transparent) no-repeat;
+    background-size: 18% 1px;
+    animation: beam-x 8s linear infinite;
+  }
+  .beam-h-alt {
+    animation-direction: reverse;
+    animation-duration: 10s;
+    animation-delay: -3s;
+  }
+
+  @keyframes banner-drift {
+    from {
+      transform: scale(1.04) translate(0, 0);
+    }
+    to {
+      transform: scale(1.12) translate(-2%, -1.5%);
+    }
+  }
+  .banner-drift {
+    animation: banner-drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes name-glitch {
+    0%,
+    88%,
+    100% {
+      transform: none;
+    }
+    89% {
+      transform: translateX(-2px) skewX(-8deg);
+    }
+    90% {
+      transform: translateX(2px);
+    }
+    91% {
+      transform: translateX(-1px) skewX(5deg);
+    }
+    92% {
+      transform: none;
+    }
+  }
+  .name-glitch {
+    display: inline-block;
+    animation: name-glitch 6s linear infinite;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(calc(-50% - 0.25rem));
+    }
+  }
+  .marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 0.5rem;
+    width: max-content;
+    padding: 2px 0;
+    animation: marquee 38s linear infinite;
+  }
+  .marquee-reverse .marquee-track {
+    animation-direction: reverse;
+    animation-duration: 46s;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes cv-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes cv-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.35);
+      opacity: 0.55;
+    }
+  }
+  @keyframes cv-ping {
+    from {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+  @keyframes cv-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes cv-flow {
+    to {
+      stroke-dashoffset: -28;
+    }
+  }
+  @keyframes cv-scan {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(var(--cv-d, 80px));
+    }
+  }
+  @keyframes cv-drift {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(var(--cv-x, 0px), var(--cv-y, 0px));
+    }
+  }
+  @keyframes cv-grow {
+    from {
+      transform: scaleY(var(--cv-from, 0.3));
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes cv-fade {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .cv {
+    --cv-ink: rgb(161 161 170);
+    --cv-line: rgb(212 212 216);
+    --cv-soft: rgb(244 244 245);
+    --cv-card: rgb(255 255 255);
+  }
+  .dark .cv {
+    --cv-ink: rgb(113 113 122);
+    --cv-line: rgb(63 63 70);
+    --cv-soft: rgb(24 24 27);
+    --cv-card: rgb(9 9 11);
+  }
+  .cv .spin,
+  .cv .pulse,
+  .cv .ping,
+  .cv .grow {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .cv .spin {
+    animation: cv-spin 14s linear infinite;
+  }
+  .cv .pulse {
+    animation: cv-pulse 2.4s ease-in-out infinite;
+  }
+  .cv .ping {
+    animation: cv-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .cv .blink {
+    animation: cv-blink 1.1s steps(1) infinite;
+  }
+  .cv .flow {
+    stroke-dasharray: 6 8;
+    animation: cv-flow 1.4s linear infinite;
+  }
+  .cv .scan {
+    animation: cv-scan 3.4s ease-in-out infinite alternate;
+  }
+  .cv .drift {
+    animation: cv-drift 5s ease-in-out infinite alternate;
+  }
+  .cv .grow {
+    transform-origin: bottom;
+    animation: cv-grow 2.8s ease-in-out infinite alternate;
+  }
+  .cv .fade {
+    animation: cv-fade 3s ease-in-out infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -197,8 +460,10 @@
     .preloader-exit {
       animation: fade-out 0.3s ease forwards;
     }
-    .preloader-exit > * {
+    .preloader-exit > *,
+    .preloader-letter {
       animation: none;
+      transform: none;
     }
     .reveal,
     .reveal-stagger > *,
@@ -209,7 +474,31 @@
     .banner-img {
       opacity: 1;
       transform: none;
+      filter: none;
       transition: none;
+    }
+    .beam-v,
+    .beam-h,
+    .banner-drift,
+    .name-glitch,
+    .cv * {
+      animation: none !important;
+    }
+    .beam-v,
+    .beam-h {
+      display: none;
+    }
+    .marquee {
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+    .marquee-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+    }
+    .marquee-track > [aria-hidden="true"] {
+      display: none;
     }
   }
 }
