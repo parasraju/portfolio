@@ -1,18 +1,14 @@
 ﻿/* eslint-disable @next/next/no-img-element */
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { withBasePath } from "@/lib/basePath";
+import { sections } from "@/lib/sections";
 import { SocialsSection } from "@/components/socials/SocialButton";
 import { ExperienceAccordion } from "@/components/experiences/ExperienceAccordion";
 import { GitHubActivity } from "@/components/github/GitHubActivity";
-
-const sections = [
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
-  { id: "opensource", label: "Open Source" },
-  { id: "skills", label: "Skills" },
-  { id: "blogs", label: "Blog" },
-];
+import { ProjectsSection } from "@/components/projects/ProjectsSection";
+import { BlogSection } from "@/components/blog/BlogSection";
+import { SearchPalette } from "@/components/search/SearchPalette";
 
 function Icon({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
@@ -30,13 +26,6 @@ function Icon({ className, children }: { className?: string; children: React.Rea
     </svg>
   );
 }
-
-const SearchIcon = ({ className }: { className?: string }) => (
-  <Icon className={className}>
-    <circle cx="11" cy="11" r="8" />
-    <path d="m21 21-4.3-4.3" />
-  </Icon>
-);
 
 const CalendarIcon = ({ className }: { className?: string }) => (
   <Icon className={className}>
@@ -72,11 +61,17 @@ export default function Home() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
+  const toggleTheme = useCallback(() => {
+    setTheme((value) => (value === "dark" ? "light" : "dark"));
+  }, []);
+
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- hydrate theme from localStorage / system preference once on mount */
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
     if (saved) setTheme(saved);
     else if (window.matchMedia("(prefers-color-scheme: dark)").matches) setTheme("dark");
     setMounted(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   useEffect(() => {
@@ -177,13 +172,18 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden sm:flex items-start justify-end gap-2 sm:gap-3 h-20 sm:h-24 py-1">
-            <button onClick={() => setCmdOpen(true)} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Search">
+            <button onClick={() => setCmdOpen(true)} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Search" aria-haspopup="dialog">
               <div className="absolute -inset-[4.5px] border border-black/5 dark:border-white/5 rounded-[9px] pointer-events-none transition-colors group-hover:border-black/10 dark:group-hover:border-white/10" />
-              <div className="relative flex items-center gap-1.5 px-3 py-1.5 bg-zinc-50 hover:bg-zinc-100 dark:bg-[#09090b] dark:hover:bg-[#121214] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] text-[11px] font-medium transition-colors border border-black/5 dark:border-white/5 shadow-sm">
-                ⌘ K
+              <div className="relative flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 hover:bg-zinc-100 dark:bg-[#09090b] dark:hover:bg-[#121214] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] text-[11px] font-medium transition-colors border border-black/5 dark:border-white/5 shadow-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="w-3 h-3">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <span className="hidden md:inline">Search</span>
+                <kbd className="rounded border border-black/10 dark:border-white/10 px-1 py-0.5 text-[9.5px] leading-none">⌘K</kbd>
               </div>
             </button>
-            <button suppressHydrationWarning onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Toggle dark mode">
+            <button suppressHydrationWarning onClick={toggleTheme} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Toggle dark mode">
               <div className="absolute -inset-[4.5px] border border-black/5 dark:border-white/5 rounded-[9px] pointer-events-none transition-colors group-hover:border-black/10 dark:group-hover:border-white/10" />
               <div className="relative flex items-center justify-center w-[32px] h-[28px] bg-zinc-50 hover:bg-zinc-100 dark:bg-[#09090b] dark:hover:bg-[#121214] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] transition-colors border border-black/5 dark:border-white/5 shadow-sm">
                 <span suppressHydrationWarning>{theme === "dark" ? <SunIcon className="w-3.5 h-3.5" /> : <MoonIcon className="w-3.5 h-3.5" />}</span>
@@ -194,7 +194,7 @@ export default function Home() {
       </div>
 
       {/* Main content column */}
-      <div className="relative pt-[calc(22vh+112px+16px)] md:mx-[30%] px-4 md:px-6 pb-10 max-w-full overflow-hidden">
+      <div className="relative pt-[calc(22vh+112px+16px)] md:mx-[30%] px-4 md:px-6 pb-10 max-w-full overflow-x-clip">
         {/* Hero */}
         <section className="pt-3 pb-6 border-b border-dashed border-zinc-200 dark:border-zinc-800 -mt-2">
           <p className="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300 max-w-[560px]">
@@ -224,24 +224,7 @@ export default function Home() {
           <ExperienceAccordion />
         </section>
 
-        {/* Projects */}
-        <section id="projects" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Projects</h2>
-          <div className="mt-6 flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 px-4 py-1.5 text-[11px] font-medium tracking-[0.16em] uppercase text-zinc-500 dark:text-zinc-400">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-zinc-500 dark:bg-zinc-400" />
-              </span>
-              Coming soon
-              <span className="inline-flex gap-[1px]">
-                <span className="animate-[pulse_1.4s_ease-in-out_infinite]">.</span>
-                <span className="animate-[pulse_1.4s_ease-in-out_0.2s_infinite]">.</span>
-                <span className="animate-[pulse_1.4s_ease-in-out_0.4s_infinite]">.</span>
-              </span>
-            </span>
-          </div>
-        </section>
+        <ProjectsSection />
 
         <GitHubActivity />
 
@@ -262,24 +245,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Blogs */}
-        <section id="blogs" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Blogs</h2>
-          <div className="mt-6 flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 px-4 py-1.5 text-[11px] font-medium tracking-[0.16em] uppercase text-zinc-500 dark:text-zinc-400">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-zinc-500 dark:bg-zinc-400" />
-              </span>
-              Coming soon
-              <span className="inline-flex gap-[1px]">
-                <span className="animate-[pulse_1.4s_ease-in-out_infinite]">.</span>
-                <span className="animate-[pulse_1.4s_ease-in-out_0.2s_infinite]">.</span>
-                <span className="animate-[pulse_1.4s_ease-in-out_0.4s_infinite]">.</span>
-              </span>
-            </span>
-          </div>
-        </section>
+        <BlogSection />
 
         {/* Editorial quote — minimal, cinematic, centered — sits well below Blogs */}
         <section className="mt-14 sm:mt-20 py-[72px] sm:py-[84px] bg-white dark:bg-black -mx-4 md:-mx-6 border-y border-dashed border-zinc-200 dark:border-zinc-800">
@@ -298,23 +264,11 @@ export default function Home() {
 
       </div>
 
-      {/* Command palette mock */}
       {cmdOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh] px-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setCmdOpen(false)} />
-          <div className="relative w-full max-w-[560px] rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden">
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-100 dark:border-zinc-800">
-              <SearchIcon className="w-4 h-4 text-zinc-400" />
-              <input autoFocus placeholder="Search for a command to run..." className="flex-1 bg-transparent outline-none text-[13px] placeholder:text-zinc-400" />
-              <span className="text-[11px] px-1.5 py-0.5 rounded border border-zinc-200 dark:border-zinc-700 text-zinc-500">ESC</span>
-            </div>
-            <div className="p-2 text-[12px] text-zinc-500">
-              <div className="px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer flex items-center justify-between"><span>Go to Projects</span><span className="text-[10px] border px-1 rounded">â†µ</span></div>
-              <div className="px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer">Toggle theme</div>
-              <div className="px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer">Copy email</div>
-            </div>
-          </div>
-        </div>
+        <SearchPalette
+          onClose={() => setCmdOpen(false)}
+          onToggleTheme={toggleTheme}
+        />
       )}
     </div>
   );

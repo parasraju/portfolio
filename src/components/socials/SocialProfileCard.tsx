@@ -62,8 +62,6 @@ export function SocialProfileCard({
   loading: boolean;
   error: string | null;
 }) {
-  const platform = profile?.platform ?? "github";
-
   if (loading) {
     return (
       <div className={CARD_CLASS}>
