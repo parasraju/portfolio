@@ -80,5 +80,136 @@
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    background: oklch(0.205 0 0);
+    color: oklch(0.985 0 0);
+  }
+  .dark ::selection {
+    background: oklch(0.922 0 0);
+    color: oklch(0.145 0 0);
+  }
+}
+
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@layer components {
+  .preloaded #preloader {
+    display: none;
+  }
+
+  @keyframes preloader-curtain {
+    to {
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  .preloader-exit {
+    animation: preloader-curtain 0.9s var(--ease-curtain) forwards;
+  }
+  .preloader-exit > * {
+    animation: fade-out 0.35s ease forwards;
+  }
+
+  .reveal,
+  .reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.8s var(--ease-out-expo),
+      transform 0.8s var(--ease-out-expo),
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .reveal {
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .reveal-stagger > * {
+    transition-delay: calc(var(--reveal-delay, 0ms) + var(--i, 0) * 55ms);
+  }
+  .reveal.is-visible,
+  .reveal-stagger.is-visible > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .grid-line-v,
+  .grid-line-h,
+  .grid-dot,
+  .index-nav,
+  .banner-img {
+    transition:
+      transform 1.4s var(--ease-out-expo),
+      opacity 0.9s var(--ease-out-expo);
+  }
+  .grid-line-v {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .grid-line-h {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .grid-dot {
+    opacity: 0;
+    transition-delay: 0.7s;
+  }
+  .index-nav {
+    opacity: 0;
+    transform: translateX(10px);
+    transition-delay: 0.5s;
+  }
+  .banner-img {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  .is-loaded .grid-line-v {
+    transform: scaleY(1);
+  }
+  .is-loaded .grid-line-h {
+    transform: scaleX(1);
+  }
+  .is-loaded .grid-dot,
+  .is-loaded .banner-img {
+    opacity: 1;
+    transform: none;
+  }
+  .is-loaded .index-nav {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .preloader-exit {
+      animation: fade-out 0.3s ease forwards;
+    }
+    .preloader-exit > * {
+      animation: none;
+    }
+    .reveal,
+    .reveal-stagger > *,
+    .grid-line-v,
+    .grid-line-h,
+    .grid-dot,
+    .index-nav,
+    .banner-img {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 }
