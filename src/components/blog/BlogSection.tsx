@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { blogPosts, publication } from "./blogData";
+import { Reveal } from "@/components/ui/Reveal";
 
 function ArrowUpRightIcon({ className }: { className?: string }) {
   return (
@@ -21,12 +22,12 @@ function formatDate(iso: string) {
 export function BlogSection() {
   return (
     <section id="blogs" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
+      <Reveal className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Blogs</h2>
         <a href={publication.archiveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
           Read all on Substack <ArrowUpRightIcon className="h-3 w-3" />
         </a>
-      </div>
+      </Reveal>
 
       <p className="mt-1.5 text-[12px] text-zinc-500 dark:text-zinc-400">
         Essays and poems from{" "}
@@ -36,10 +37,11 @@ export function BlogSection() {
         .
       </p>
 
-      <div className="mt-2">
-        {blogPosts.map((post) => (
+      <Reveal stagger delay={60} className="mt-2">
+        {blogPosts.map((post, i) => (
           <a
             key={post.url}
+            style={{ "--i": i } as React.CSSProperties}
             href={post.url}
             target="_blank"
             rel="noopener noreferrer"
@@ -86,7 +88,7 @@ export function BlogSection() {
             <ArrowUpRightIcon className="h-3.5 w-3.5 shrink-0 text-zinc-300 transition-colors group-hover:text-zinc-700 dark:text-zinc-600 dark:group-hover:text-zinc-300" />
           </a>
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import { npmPackages, projects } from "./projectsData";
+import { Reveal } from "@/components/ui/Reveal";
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -35,9 +36,9 @@ function DownloadIcon({ className }: { className?: string }) {
   );
 }
 
-function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+function ProjectCard({ project, index }: { project: (typeof projects)[number]; index: number }) {
   return (
-    <article className="group relative flex flex-col rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c] p-4 transition-all duration-200 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-[0_6px_20px_rgba(0,0,0,0.04)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.35)]">
+    <article style={{ "--i": index } as React.CSSProperties} className="group relative flex h-full flex-col rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c] p-4 hover:-translate-y-0.5 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-[13px] font-bold text-zinc-700 dark:text-zinc-300">
@@ -92,20 +93,20 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
 export function ProjectsSection() {
   return (
     <section id="projects" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
+      <Reveal className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Projects</h2>
         <a href="https://github.com/parasraju?tab=repositories" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
           View all on GitHub <ArrowUpRightIcon className="h-3 w-3" />
         </a>
-      </div>
+      </Reveal>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
+      <Reveal stagger delay={80} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {projects.map((project, i) => (
+          <ProjectCard key={project.slug} project={project} index={i} />
         ))}
-      </div>
+      </Reveal>
 
-      <div className="mt-8">
+      <Reveal className="mt-8">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="text-[12px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
             npm packages
@@ -144,7 +145,7 @@ export function ProjectsSection() {
             </a>
           ))}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
