@@ -171,9 +171,9 @@ export default function Home() {
       {/* Index nav */}
       <div className="fixed inset-0 z-50 pointer-events-none hidden lg:block" style={{ width: "calc(100vw - var(--removed-body-scroll-bar-size, 0px))" }}>
         <nav className="index-nav absolute top-[22vh] left-[calc(69%+32px)] pointer-events-auto flex flex-col gap-4 mt-2">
-          <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-400 dark:text-zinc-600 uppercase mb-1">Index</h3>
+          <h3 className="font-mono text-[10px] font-bold tracking-[0.2em] text-zinc-400 dark:text-zinc-600 uppercase mb-1">Index</h3>
           {sections.map((s) => (
-            <a key={s.id} href={`#${s.id}`} onClick={() => setActive(s.id)} className={`text-[12px] font-medium tracking-[0.05em] transition-all duration-300 ease-out flex items-center gap-3 ${active === s.id ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400"}`}>
+            <a key={s.id} href={`#${s.id}`} onClick={() => setActive(s.id)} className={`font-mono text-[11.5px] tracking-[0.02em] transition-all duration-300 ease-out flex items-center gap-3 ${active === s.id ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400"}`}>
               <span className={`h-[1px] transition-all duration-300 ease-out ${active === s.id ? "w-4 bg-zinc-900 dark:bg-zinc-100" : "w-0 bg-transparent"}`} />
               {s.label}
             </a>
@@ -191,7 +191,7 @@ export default function Home() {
         <div className="absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-20 bg-gradient-to-r from-white/60 to-transparent dark:from-black/30" />
         <div className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-20 bg-gradient-to-l from-white/60 to-transparent dark:from-black/30" />
         <div className="absolute bottom-3 right-2 z-10">
-          <div suppressHydrationWarning className="text-[20px] sm:text-[24px] tracking-[0.15em] text-zinc-500 dark:text-zinc-400" style={{ fontFamily: "var(--font-doto), monospace", fontWeight: 700 }}>{time}</div>
+          <div suppressHydrationWarning className="font-mono text-[18px] sm:text-[21px] font-medium tracking-[0.08em] text-zinc-500 dark:text-zinc-400">{time}</div>
         </div>
       </div>
 
@@ -207,7 +207,7 @@ export default function Home() {
               </div>
             </Reveal>
             <Reveal delay={90} className="flex flex-col justify-center">
-              <h1 className="text-[20px] sm:text-[24px] font-bold text-zinc-800 dark:text-zinc-100 tracking-tight leading-none mb-0.5 [text-shadow:-1.5px_0_0_rgba(0,200,255,0.3),1.5px_0_0_rgba(255,80,0,0.3)] dark:[text-shadow:-1.5px_0_0_rgba(0,200,255,0.6),1.5px_0_0_rgba(255,80,0,0.6)]"><span className="name-glitch">Paras Raju</span></h1>
+              <h1 className="font-serif text-[27px] sm:text-[35px] font-normal leading-[1.02] tracking-[-0.015em] text-zinc-900 dark:text-zinc-50 mb-1"><span className="name-glitch">Paras Raju</span></h1>
               <p className="text-[13px] sm:text-[14px] text-zinc-500 dark:text-zinc-400">20</p>
             </Reveal>
           </div>
@@ -271,7 +271,7 @@ export default function Home() {
         {/* Experiences */}
         <section id="experience" className="scroll-mt-24 py-6">
           <Reveal>
-            <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white mb-4">Experiences</h2>
+            <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white mb-4">Experiences</h2>
           </Reveal>
           <ExperienceAccordion />
         </section>
@@ -285,7 +285,7 @@ export default function Home() {
         {/* Skills */}
         <section id="skills" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
           <Reveal>
-            <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white mb-3">Skills &amp; Technologies</h2>
+            <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white mb-3">Skills &amp; Technologies</h2>
           </Reveal>
           <Reveal className="space-y-2">
             {SKILL_ROWS.map((row, r) => (
@@ -309,20 +309,20 @@ export default function Home() {
         {/* Editorial quote — minimal, cinematic, centered — sits well below Blogs */}
         <section className="mt-14 sm:mt-20 py-[72px] sm:py-[84px] bg-white dark:bg-black -mx-4 md:-mx-6 border-y border-dashed border-zinc-200 dark:border-zinc-800">
           <Reveal className="max-w-[520px] mx-auto px-4 md:px-6 text-center">
-            <blockquote className="text-[19px] sm:text-[23px] md:text-[25px] italic font-medium leading-[1.35] text-zinc-600 dark:text-zinc-300">
+            <blockquote className="font-serif text-[24px] sm:text-[30px] md:text-[34px] italic font-normal leading-[1.25] tracking-[0.005em] text-zinc-700 dark:text-zinc-200">
               “Power belongs to those who take it.”
             </blockquote>
             <div className="mt-8 sm:mt-9 flex items-center justify-center gap-3 sm:gap-4">
               <span className="h-px w-7 sm:w-10 bg-zinc-300 dark:bg-zinc-700" />
-              <span className="text-[11px] tracking-[0.32em] text-zinc-500 uppercase">Tyrell Wellick</span>
+              <span className="font-mono text-[10px] tracking-[0.28em] text-zinc-500 uppercase">Tyrell Wellick</span>
               <span className="h-px w-7 sm:w-10 bg-zinc-300 dark:bg-zinc-700" />
             </div>
           </Reveal>
         </section>
 
-        <footer className="flex items-center justify-between gap-4 pt-6 pb-2 text-[11px] tracking-[0.08em] text-zinc-400 dark:text-zinc-600">
+        <footer className="flex items-center justify-between gap-4 pt-6 pb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-600">
           <span>© {new Date().getFullYear()} Paras Raju</span>
-          <a href="#top" className="group inline-flex items-center gap-1.5 uppercase tracking-[0.18em] transition-colors hover:text-zinc-900 dark:hover:text-zinc-200">
+          <a href="#top" className="group inline-flex items-center gap-1.5 uppercase tracking-[0.16em] transition-colors hover:text-zinc-900 dark:hover:text-zinc-200">
             Back to top
             <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5">↑</span>
           </a>

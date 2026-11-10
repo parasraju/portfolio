@@ -171,7 +171,7 @@ export function GitHubActivity() {
     return (
       <section id="opensource" className="scroll-mt-24 border-t border-dashed border-zinc-200 py-6 dark:border-zinc-800">
         <div className="mb-4 flex items-baseline justify-between gap-4">
-          <h2 className="text-[18px] font-bold tracking-tight text-zinc-900 dark:text-white sm:text-[20px]">GitHub Activity</h2>
+          <h2 className="font-serif text-[24px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white sm:text-[28px]">GitHub Activity</h2>
           <span className="text-[12px] text-zinc-500">Loading…</span>
         </div>
         <div className="w-full animate-pulse">
@@ -198,7 +198,7 @@ export function GitHubActivity() {
     return (
       <section id="opensource" className="scroll-mt-24 border-t border-dashed border-zinc-200 py-6 dark:border-zinc-800">
         <div className="mb-2 flex items-baseline justify-between gap-4">
-          <h2 className="text-[18px] font-bold tracking-tight text-zinc-900 dark:text-white sm:text-[20px]">GitHub Activity</h2>
+          <h2 className="font-serif text-[24px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white sm:text-[28px]">GitHub Activity</h2>
           <a href="https://github.com/parasraju" target="_blank" rel="noopener noreferrer" className="text-[12px] text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
             View profile ↗
           </a>
@@ -217,7 +217,7 @@ export function GitHubActivity() {
   return (
     <section id="opensource" className="scroll-mt-24 border-t border-dashed border-zinc-200 py-6 dark:border-zinc-800">
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-[18px] font-bold tracking-tight text-zinc-900 dark:text-white sm:text-[20px]">GitHub Activity</h2>
+        <h2 className="font-serif text-[24px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white sm:text-[28px]">GitHub Activity</h2>
         <div className="flex items-baseline gap-2.5">
           <span className="text-[12px] text-zinc-500 dark:text-zinc-400 sm:text-[13px]">
             {model.total.toLocaleString()} contributions in {model.year}

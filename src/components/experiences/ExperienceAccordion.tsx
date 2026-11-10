@@ -70,7 +70,7 @@ function ExperienceRow({ exp, index, isOpen, onToggle }: { exp: Experience; inde
           <div className={`pl-0 sm:pl-[56px] pb-6 sm:pb-7 transition-all duration-300 ease-out ${isOpen ? "translate-y-0" : "-translate-y-1"} motion-reduce:translate-y-0`}>
             {/* Metrics row — subtle, no fabricated numbers */}
             {exp.metrics && (
-              <div className="flex gap-6 sm:gap-8 mb-5">
+              <div className="flex gap-6 sm:gap-8 mb-5 font-mono">
                 <div className="text-[10px] leading-tight">
                   <p className="font-semibold tracking-[0.12em] text-zinc-400 dark:text-zinc-500">OPEN SOURCE</p>
                   <p className="font-semibold tracking-[0.12em] text-zinc-900 dark:text-white">CONTRIBUTION</p>
