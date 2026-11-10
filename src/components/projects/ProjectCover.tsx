@@ -5,7 +5,7 @@ const LINE = "var(--cv-line)";
 const SOFT = "var(--cv-soft)";
 const CARD = "var(--cv-card)";
 const ACC = "var(--cv-accent)";
-const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
+const MONO = "var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace";
 
 const ACCENTS: Record<string, string> = {
   hexlens: "#3b82f6",

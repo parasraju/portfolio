@@ -79,7 +79,7 @@ export function GitHubContributions() {
   return (
     <div className="mt-5 overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h3 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Open Source Contributions</h3>
+        <h3 className="font-serif text-[22px] sm:text-[25px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white">Open Source Contributions</h3>
         <div className="flex rounded-[8px] border border-zinc-200 dark:border-zinc-800 overflow-hidden p-0.5 bg-zinc-100 dark:bg-[#111111] self-start sm:self-auto">
           {(["merged", "open", "closed"] as Tab[]).map((t) => (
             <button
