@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
-const basePath = "/portfolio";
+const basePath = process.env.GITHUB_ACTIONS === "true" ? "/portfolio" : "";
 
 const nextConfig: NextConfig = {
   output: "export",
+  devIndicators: false,
   trailingSlash: true,
   basePath,
   env: {
