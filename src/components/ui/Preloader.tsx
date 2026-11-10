@@ -87,26 +87,23 @@ export function Preloader() {
 
       <div className="absolute inset-x-0 bottom-[22vh] h-px origin-left bg-zinc-900 dark:bg-zinc-100" style={{ transform: `scaleX(${progress / 100})` }} />
 
-      <div className="absolute top-6 left-5 sm:left-8 md:left-[calc(30%+24px)] text-[10px] font-semibold uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
+      <div className="absolute top-6 left-5 sm:left-8 md:left-[calc(30%+24px)] font-mono text-[10px] font-semibold uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
         Portfolio — {new Date().getFullYear()}
       </div>
-      <div className="absolute top-6 right-5 sm:right-8 md:right-[calc(30%+24px)] flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
+      <div className="absolute top-6 right-5 sm:right-8 md:right-[calc(30%+24px)] flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.28em] text-zinc-400 dark:text-zinc-500">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-zinc-900 dark:bg-zinc-100" />
         Loading
       </div>
 
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-5">
-        <div className="flex overflow-hidden text-[12px] font-semibold tracking-[0.5em] text-zinc-500 dark:text-zinc-400 sm:text-[13px]">
+        <div className="flex overflow-hidden font-serif text-[20px] tracking-[0.3em] text-zinc-600 dark:text-zinc-300 sm:text-[26px]">
           {NAME.split("").map((ch, i) => (
             <span key={i} className="preloader-letter" style={{ "--i": i } as React.CSSProperties}>
               {ch === " " ? "\u00a0" : ch}
             </span>
           ))}
         </div>
-        <div
-          className="select-none text-[96px] leading-none tracking-[0.08em] tabular-nums sm:text-[150px] md:text-[180px]"
-          style={{ fontFamily: "var(--font-doto), monospace", fontWeight: 700 }}
-        >
+        <div className="select-none font-mono text-[88px] leading-none tracking-[0.02em] tabular-nums sm:text-[140px] md:text-[168px]">
           {counter}
         </div>
         <div className="h-[2px] w-40 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800 sm:w-56">
@@ -114,15 +111,14 @@ export function Preloader() {
         </div>
       </div>
 
-      <div className="absolute bottom-[calc(22vh-28px)] left-5 sm:left-8 md:left-[calc(30%+24px)] overflow-hidden text-[10px] uppercase tracking-[0.28em] text-zinc-500 dark:text-zinc-400">
+      <div className="absolute bottom-[calc(22vh-28px)] left-5 sm:left-8 md:left-[calc(30%+24px)] overflow-hidden font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500 dark:text-zinc-400">
         <span key={stage} className="preloader-stage inline-block">
           {STAGES[stage]}
           {stage < STAGES.length - 1 && <span className="animate-pulse">…</span>}
         </span>
       </div>
       <div
-        className="absolute bottom-[calc(22vh-28px)] right-5 sm:right-8 md:right-[calc(30%+24px)] text-[11px] tracking-[0.2em] text-zinc-500 dark:text-zinc-400"
-        style={{ fontFamily: "var(--font-doto), monospace", fontWeight: 700 }}
+        className="absolute bottom-[calc(22vh-28px)] right-5 sm:right-8 md:right-[calc(30%+24px)] font-mono text-[11px] tracking-[0.18em] text-zinc-500 dark:text-zinc-400"
       >
         {counter}%
       </div>

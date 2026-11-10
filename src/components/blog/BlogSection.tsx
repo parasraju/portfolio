@@ -23,7 +23,7 @@ export function BlogSection() {
   return (
     <section id="blogs" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
       <Reveal className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Blogs</h2>
+        <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white">Blogs</h2>
         <a href={publication.archiveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
           Read all on Substack <ArrowUpRightIcon className="h-3 w-3" />
         </a>
@@ -48,7 +48,7 @@ export function BlogSection() {
             className="group flex items-center gap-4 border-b border-dashed border-zinc-200 py-4 last:border-b-0 dark:border-zinc-800"
           >
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] uppercase tracking-[0.1em] text-zinc-400 dark:text-zinc-500">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-[0.08em] text-zinc-400 dark:text-zinc-500">
                 <span>{formatDate(post.published)}</span>
                 <span className="text-zinc-300 dark:text-zinc-700">·</span>
                 <span>{post.readTime} min read</span>

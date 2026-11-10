@@ -98,7 +98,7 @@ export function ProjectsSection() {
   return (
     <section id="projects" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
       <Reveal className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-[18px] sm:text-[20px] font-bold tracking-tight text-zinc-900 dark:text-white">Projects</h2>
+        <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white">Projects</h2>
         <a href="https://github.com/parasraju?tab=repositories" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
           View all on GitHub <ArrowUpRightIcon className="h-3 w-3" />
         </a>
@@ -112,7 +112,7 @@ export function ProjectsSection() {
 
       <Reveal className="mt-8">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="text-[12px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">
+          <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
             npm packages
           </h3>
           <a href="https://www.npmjs.com/~parasraju" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
