@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { LoadingProvider } from "@/components/ui/LoadingProvider";
 import { Preloader } from "@/components/ui/Preloader";
+import { Navbar } from "@/components/ui/Navbar";
 import { PRELOADER_SEEN_KEY } from "@/lib/preloader";
 
 const inter = Inter({
@@ -50,6 +51,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white dark:bg-black text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
         <LoadingProvider>
           <Preloader />
+          <Navbar />
           {children}
         </LoadingProvider>
       </body>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { sections } from "@/lib/sections";
+import { useRouter } from "next/navigation";
+import { pages, sections } from "@/lib/sections";
 import { npmPackages, projects } from "@/components/projects/projectsData";
 import { blogPosts } from "@/components/blog/blogData";
 import { SOCIAL_CONFIG } from "@/components/socials/socialApi";
@@ -22,6 +23,7 @@ type Item = {
   kind: ItemKind;
   keywords?: string;
   href?: string;
+  route?: string;
   onSelect?: () => void;
 };
 
@@ -84,6 +86,7 @@ function ItemIcon({ kind }: { kind: ItemKind }) {
 const EMAIL = "rajuparas766@gmail.com";
 
 export function SearchPalette({ onClose, onToggleTheme }: SearchPaletteProps) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -121,6 +124,16 @@ export function SearchPalette({ onClose, onToggleTheme }: SearchPaletteProps) {
       onSelect: () => {
         document.getElementById(section.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
       },
+    }));
+
+    const pageItems: Item[] = pages.map((page) => ({
+      id: `page-${page.href}`,
+      group: "Pages",
+      title: page.label,
+      subtitle: page.description,
+      kind: "section",
+      keywords: `page open ${page.href}`,
+      route: page.href,
     }));
 
     const actions: Item[] = [
@@ -190,6 +203,7 @@ export function SearchPalette({ onClose, onToggleTheme }: SearchPaletteProps) {
 
     if (!q) {
       return [
+        { label: "Pages", items: pageItems },
         { label: "Jump to", items: jump },
         { label: "Actions", items: actions },
         { label: "Projects", items: projectItems.slice(0, 4) },
@@ -198,6 +212,7 @@ export function SearchPalette({ onClose, onToggleTheme }: SearchPaletteProps) {
     }
 
     return [
+      { label: "Pages", items: pageItems },
       { label: "Jump to", items: jump },
       { label: "Actions", items: actions },
       { label: "Projects", items: projectItems },
@@ -219,7 +234,9 @@ export function SearchPalette({ onClose, onToggleTheme }: SearchPaletteProps) {
   }, [safeActive, flat.length]);
 
   const select = (item: Item) => {
-    if (item.href) {
+    if (item.route) {
+      router.push(item.route);
+    } else if (item.href) {
       window.open(item.href, "_blank", "noopener,noreferrer");
     } else {
       item.onSelect?.();

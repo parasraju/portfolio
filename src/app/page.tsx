@@ -1,38 +1,21 @@
 ﻿/* eslint-disable @next/next/no-img-element */
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { withBasePath } from "@/lib/basePath";
 import { sections } from "@/lib/sections";
+import { toggleTheme } from "@/lib/theme";
 import { SocialsSection } from "@/components/socials/SocialButton";
 import { ExperienceAccordion } from "@/components/experiences/ExperienceAccordion";
 import { GitHubActivity } from "@/components/github/GitHubActivity";
-import { ProjectsSection } from "@/components/projects/ProjectsSection";
-import { BlogSection } from "@/components/blog/BlogSection";
+import { BlogList, SubstackNote } from "@/components/blog/BlogSection";
 import { SearchPalette } from "@/components/search/SearchPalette";
 import { Reveal } from "@/components/ui/Reveal";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
-
-const SKILLS: [string, string][] = [
-  ["React","https://cdn.simpleicons.org/react/71717a"],
-  ["Node.js","https://cdn.simpleicons.org/nodedotjs/71717a"],
-  ["Redis","https://cdn.simpleicons.org/redis/71717a"],
-  ["TanStack Query","https://cdn.simpleicons.org/reactquery/71717a"],
-  ["Tailwind CSS","https://cdn.simpleicons.org/tailwindcss/71717a"],
-  ["shadcn/ui","https://cdn.simpleicons.org/shadcnui/71717a"],
-  ["Motion","https://cdn.simpleicons.org/framer/71717a"],
-  ["JavaScript","https://cdn.simpleicons.org/javascript/71717a"],
-  ["TypeScript","https://cdn.simpleicons.org/typescript/71717a"],
-  ["Python","https://cdn.simpleicons.org/python/71717a"],
-  ["C / C++","https://cdn.simpleicons.org/cplusplus/71717a"],
-  ["SQL","https://cdn.simpleicons.org/mysql/71717a"],
-  ["Git","https://cdn.simpleicons.org/git/71717a"],
-  ["GitHub","https://cdn.simpleicons.org/github/71717a"],
-  ["Figma","https://cdn.simpleicons.org/figma/71717a"],
-  ["Docker","https://cdn.simpleicons.org/docker/71717a"],
-  ["Linux","https://cdn.simpleicons.org/linux/71717a"],
-];
-
-const SKILL_ROWS = [SKILLS.slice(0, 9), SKILLS.slice(9)];
+import { SectionHeading, SeeAll } from "@/components/ui/SeeAll";
+import { SiteFooter } from "@/components/ui/SiteFooter";
+import { TerminalPreview } from "@/components/setup/Terminal";
+import { BookShelf, MovieStrip } from "@/components/personal/Personal";
+import { SpotifyLastPlayed } from "@/components/spotify/SpotifyLastPlayed";
 
 function Icon({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
@@ -65,44 +48,10 @@ const ArrowUpRightIcon = ({ className }: { className?: string }) => (
   </Icon>
 );
 
-const MoonIcon = ({ className }: { className?: string }) => (
-  <Icon className={className}>
-    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-  </Icon>
-);
-
-const SunIcon = ({ className }: { className?: string }) => (
-  <Icon className={className}>
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-  </Icon>
-);
-
 export default function Home() {
   const [active, setActive] = useState("");
   const [time, setTime] = useState("00.00.00");
   const [cmdOpen, setCmdOpen] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((value) => (value === "dark" ? "light" : "dark"));
-  }, []);
-
-  useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect -- hydrate theme from localStorage / system preference once on mount */
-    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (saved) setTheme(saved);
-    else if (window.matchMedia("(prefers-color-scheme: dark)").matches) setTheme("dark");
-    setMounted(true);
-    /* eslint-enable react-hooks/set-state-in-effect */
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
-  }, [theme, mounted]);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -209,6 +158,7 @@ export default function Home() {
             <Reveal delay={90} className="flex flex-col justify-center">
               <h1 className="font-serif text-[27px] sm:text-[35px] font-normal leading-[1.02] tracking-[-0.015em] text-zinc-900 dark:text-zinc-50 mb-1"><span className="name-glitch">Paras Raju</span></h1>
               <p className="text-[13px] sm:text-[14px] text-zinc-500 dark:text-zinc-400">20</p>
+              <SpotifyLastPlayed />
             </Reveal>
           </div>
           <Reveal delay={180} className="flex items-start justify-end gap-2 sm:gap-3 h-16 sm:h-24 py-1">
@@ -221,12 +171,6 @@ export default function Home() {
                 </svg>
                 <span className="hidden md:inline">Search</span>
                 <kbd className="hidden sm:inline rounded border border-black/10 dark:border-white/10 px-1 py-0.5 text-[9.5px] leading-none">⌘K</kbd>
-              </div>
-            </button>
-            <button suppressHydrationWarning onClick={toggleTheme} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Toggle dark mode">
-              <div className="absolute -inset-[4.5px] border border-black/5 dark:border-white/5 rounded-[9px] pointer-events-none transition-colors group-hover:border-black/10 dark:group-hover:border-white/10" />
-              <div className="relative flex items-center justify-center w-[32px] h-[28px] bg-zinc-50 hover:bg-zinc-100 dark:bg-[#09090b] dark:hover:bg-[#121214] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] transition-colors border border-black/5 dark:border-white/5 shadow-sm">
-                <span suppressHydrationWarning>{theme === "dark" ? <SunIcon className="w-3.5 h-3.5" /> : <MoonIcon className="w-3.5 h-3.5" />}</span>
               </div>
             </button>
           </Reveal>
@@ -268,43 +212,72 @@ export default function Home() {
           </Reveal>
         </section>
 
-        {/* Experiences */}
         <section id="experience" className="scroll-mt-24 py-6">
-          <Reveal>
-            <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white mb-4">Experiences</h2>
+          <Reveal className="mb-4">
+            <SectionHeading title="Experiences" />
           </Reveal>
-          <ExperienceAccordion />
+          <ExperienceAccordion limit={2} />
+          <Reveal>
+            <SeeAll href="/experience/">See full experiences</SeeAll>
+          </Reveal>
         </section>
-
-        <ProjectsSection />
 
         <Reveal>
           <GitHubActivity />
         </Reveal>
 
-        {/* Skills */}
-        <section id="skills" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
+        <section id="blogs" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
           <Reveal>
-            <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white mb-3">Skills &amp; Technologies</h2>
+            <SectionHeading title="Blogs" />
+            <div className="mt-1.5">
+              <SubstackNote />
+            </div>
           </Reveal>
-          <Reveal className="space-y-2">
-            {SKILL_ROWS.map((row, r) => (
-              <div key={r} className={`marquee${r ? " marquee-reverse" : ""}`}>
-                <div className="marquee-track">
-                  {[0, 1].map((copy) =>
-                    row.map(([label, src]) => (
-                      <span key={`${copy}-${label}`} aria-hidden={copy === 1 ? "true" : undefined} className="inline-flex shrink-0 items-center gap-1.5 px-3.5 py-1.5 rounded-[6px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-[12px] text-zinc-700 dark:text-zinc-300 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700">
-                        <img src={src} alt={copy === 1 ? "" : label} width={14} height={14} loading="lazy" decoding="async" className="h-3.5 w-3.5 opacity-80" /> {label}
-                      </span>
-                    ))
-                  )}
-                </div>
-              </div>
-            ))}
+          <BlogList limit={2} />
+          <Reveal>
+            <SeeAll href="/blogs/">See full blog</SeeAll>
           </Reveal>
         </section>
 
-        <BlogSection />
+        <section id="development" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
+          <Reveal>
+            <SectionHeading title="Development" />
+            <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-400">My terminal, gear and setup.</p>
+          </Reveal>
+          <Reveal delay={80}>
+            <TerminalPreview />
+          </Reveal>
+          <Reveal>
+            <SeeAll href="/setup/">See my setup</SeeAll>
+          </Reveal>
+        </section>
+
+        <section id="personal" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
+          <Reveal>
+            <SectionHeading title="Personal" />
+            <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-400">What I read and watch when I&apos;m not building.</p>
+          </Reveal>
+
+          <div className="mt-6">
+            <Reveal className="flex items-baseline justify-between gap-2">
+              <h3 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">Books</h3>
+            </Reveal>
+            <BookShelf limit={6} />
+            <Reveal>
+              <SeeAll href="/books/">All books</SeeAll>
+            </Reveal>
+          </div>
+
+          <div className="mt-9">
+            <Reveal className="flex items-baseline justify-between gap-2">
+              <h3 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">Movies</h3>
+            </Reveal>
+            <MovieStrip limit={4} />
+            <Reveal>
+              <SeeAll href="/movies/">All movies</SeeAll>
+            </Reveal>
+          </div>
+        </section>
 
         {/* Editorial quote — minimal, cinematic, centered — sits well below Blogs */}
         <section className="mt-14 sm:mt-20 py-[72px] sm:py-[84px] bg-white dark:bg-black -mx-4 md:-mx-6 border-y border-dashed border-zinc-200 dark:border-zinc-800">
@@ -320,13 +293,7 @@ export default function Home() {
           </Reveal>
         </section>
 
-        <footer className="flex items-center justify-between gap-4 pt-6 pb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-600">
-          <span>© {new Date().getFullYear()} Paras Raju</span>
-          <a href="#top" className="group inline-flex items-center gap-1.5 uppercase tracking-[0.16em] transition-colors hover:text-zinc-900 dark:hover:text-zinc-200">
-            Back to top
-            <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5">↑</span>
-          </a>
-        </footer>
+        <SiteFooter />
       </div>
 
       {cmdOpen && (
