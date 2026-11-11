@@ -13,7 +13,6 @@ export type Movie = {
   slug: string;
   title: string;
   director: string;
-  starring?: string;
   year: string;
   poster: string;
   genre: string;
@@ -256,48 +255,5 @@ export const movies: Movie[] = [
     genre: "Screenlife horror",
     about: "A second-hand laptop logs into someone else's dark-web life — and its owners want it back.",
     url: wiki("Unfriended:_Dark_Web"),
-  },
-  {
-    slug: "dil-diyan-gallan",
-    title: "Dil Diyan Gallan",
-    director: "Udaypratap Singh",
-    starring: "Parmish Verma, Wamiqa Gabbi",
-    year: "2019",
-    poster: "/assets/movies/dil-diyan-gallan.jpg",
-    genre: "Punjabi romance",
-    about: "An internet star and a student who can't stand social media fall for each other in London.",
-    url: "https://www.themoviedb.org/movie/600028-dil-diyan-gallan",
-  },
-  {
-    slug: "lucky-di-unlucky-story",
-    title: "Lucky Di Unlucky Story",
-    director: "Smeep Kang",
-    starring: "Gippy Grewal, Jaswinder Bhalla, Binnu Dhillon",
-    year: "2013",
-    poster: "/assets/movies/lucky-di-unlucky-story.jpg",
-    genre: "Punjabi comedy",
-    about: "A ladies' man and his friends dig themselves deeper with every lie — Punjabi comedy at full volume.",
-    url: wiki("Lucky_Di_Unlucky_Story"),
-  },
-  {
-    slug: "lahore",
-    title: "Lahore",
-    director: "Sanjay Puran Singh Chauhan",
-    year: "2010",
-    poster: "/assets/movies/lahore.jpg",
-    genre: "Sports drama",
-    about: "An India–Pakistan kickboxing rivalry turns personal when one fight in Lahore ends in tragedy.",
-    url: wiki("Lahore_(2010_film)"),
-  },
-  {
-    slug: "jatt-and-juliet",
-    title: "Jatt & Juliet",
-    director: "Anurag Singh",
-    starring: "Diljit Dosanjh, Neeru Bajwa",
-    year: "2012",
-    poster: "/assets/movies/jatt-and-juliet.jpg",
-    genre: "Punjabi romantic comedy",
-    about: "A village boy and a city girl, both bound for Canada, bicker their way from Patiala to Vancouver.",
-    url: wiki("Jatt_%26_Juliet"),
   },
 ];
