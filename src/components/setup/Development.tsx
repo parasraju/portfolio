@@ -87,26 +87,15 @@ export function DevelopmentLinks() {
   );
 }
 
-function TerminalWindow({ section, path }: { section: SetupSection; path: string }) {
+function PointList({ section }: { section: SetupSection }) {
   return (
-    <section aria-label={section.title} className="overflow-hidden rounded-[10px] border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-[#0b0b0c]">
-      <div className="flex items-center gap-3 border-b border-dashed border-zinc-200 px-3.5 py-2 dark:border-zinc-800">
-        <span aria-hidden="true" className="flex gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-          <span className="h-2 w-2 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-          <span className="h-2 w-2 rounded-full bg-zinc-200 dark:bg-zinc-800" />
-        </span>
-        <span className="truncate font-mono text-[10.5px] text-zinc-400 dark:text-zinc-500">~/{path}</span>
-        <span className="ml-auto font-mono text-[9.5px] uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-600">{section.title}</span>
-      </div>
-      <ul className="divide-y divide-dashed divide-zinc-200 dark:divide-zinc-800">
+    <section aria-label={section.title}>
+      <h2 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
+      <ul className="mt-3 list-disc space-y-2.5 pl-5 marker:text-zinc-400 dark:marker:text-zinc-600">
         {section.items.map((item) => (
-          <li key={item.name} className="px-3.5 py-3.5">
-            <p className="font-mono text-[12.5px]">
-              <span aria-hidden="true" className="mr-2 select-none text-zinc-400 dark:text-zinc-600">$</span>
-              <ItemName item={item} className="font-semibold text-zinc-900 dark:text-zinc-100" />
-            </p>
-            {item.detail && <p className="mt-1.5 pl-[18px] text-[12.5px] leading-[1.6] text-zinc-600 dark:text-zinc-400">{item.detail}</p>}
+          <li key={item.name} className="text-[13.5px] leading-[1.6] text-zinc-600 dark:text-zinc-400">
+            <ItemName item={item} className="font-medium text-zinc-900 dark:text-zinc-100" />
+            {item.detail && <> — {item.detail}</>}
           </li>
         ))}
       </ul>
@@ -162,10 +151,10 @@ function SoftwareRow({ section }: { section: SetupSection }) {
 function GroupContent({ group }: { group: SetupGroup }) {
   if (group.slug === "terminal") {
     return (
-      <Reveal stagger delay={60} className="grid gap-4">
+      <Reveal stagger delay={60} className="grid gap-7">
         {group.sections.map((section, i) => (
           <div key={section.title} style={{ "--i": i } as React.CSSProperties}>
-            <TerminalWindow section={section} path={`${group.slug}/${section.title.toLowerCase().replace(/\s+/g, "-")}`} />
+            <PointList section={section} />
           </div>
         ))}
       </Reveal>

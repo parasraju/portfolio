@@ -79,6 +79,7 @@ export const setupGroups: SetupGroup[] = [
           {
             name: "HP EliteBook",
             specs: [
+              { label: "Processor", value: "Intel Core i5 (8th gen)" },
               { label: "RAM", value: "8 GB" },
               { label: "Storage", value: "256 GB" },
             ],
