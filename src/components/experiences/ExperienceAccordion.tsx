@@ -133,12 +133,13 @@ function ExperienceRow({ exp, index, isOpen, onToggle }: { exp: Experience; inde
   );
 }
 
-export function ExperienceAccordion() {
-  const [openId, setOpenId] = useState<string | null>(null);
+export function ExperienceAccordion({ limit, defaultOpen = false }: { limit?: number; defaultOpen?: boolean }) {
+  const list = limit ? experiences.slice(0, limit) : experiences;
+  const [openId, setOpenId] = useState<string | null>(defaultOpen ? (list[0]?.id ?? null) : null);
 
   return (
     <Reveal stagger delay={80} className="w-full">
-      {experiences.map((exp, i) => (
+      {list.map((exp, i) => (
         <ExperienceRow key={exp.id} exp={exp} index={i} isOpen={openId === exp.id} onToggle={() => setOpenId((v) => (v === exp.id ? null : exp.id))} />
       ))}
     </Reveal>

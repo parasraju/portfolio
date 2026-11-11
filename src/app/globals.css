@@ -312,149 +312,6 @@
     animation: name-glitch 6s linear infinite;
   }
 
-  @keyframes marquee {
-    to {
-      transform: translateX(calc(-50% - 0.25rem));
-    }
-  }
-  .marquee {
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  }
-  .marquee-track {
-    display: flex;
-    gap: 0.5rem;
-    width: max-content;
-    padding: 2px 0;
-    animation: marquee 38s linear infinite;
-  }
-  .marquee-reverse .marquee-track {
-    animation-direction: reverse;
-    animation-duration: 46s;
-  }
-  .marquee:hover .marquee-track {
-    animation-play-state: paused;
-  }
-
-  @keyframes cv-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  @keyframes cv-pulse {
-    0%,
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(1.35);
-      opacity: 0.55;
-    }
-  }
-  @keyframes cv-ping {
-    from {
-      transform: scale(0.6);
-      opacity: 0.9;
-    }
-    to {
-      transform: scale(2.4);
-      opacity: 0;
-    }
-  }
-  @keyframes cv-blink {
-    50% {
-      opacity: 0;
-    }
-  }
-  @keyframes cv-flow {
-    to {
-      stroke-dashoffset: -28;
-    }
-  }
-  @keyframes cv-scan {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(var(--cv-d, 80px));
-    }
-  }
-  @keyframes cv-drift {
-    from {
-      transform: translate(0, 0);
-    }
-    to {
-      transform: translate(var(--cv-x, 0px), var(--cv-y, 0px));
-    }
-  }
-  @keyframes cv-grow {
-    from {
-      transform: scaleY(var(--cv-from, 0.3));
-    }
-    to {
-      transform: scaleY(1);
-    }
-  }
-  @keyframes cv-fade {
-    0%,
-    100% {
-      opacity: 0.25;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-  .cv {
-    --cv-ink: rgb(161 161 170);
-    --cv-line: rgb(212 212 216);
-    --cv-soft: rgb(244 244 245);
-    --cv-card: rgb(255 255 255);
-  }
-  .dark .cv {
-    --cv-ink: rgb(113 113 122);
-    --cv-line: rgb(63 63 70);
-    --cv-soft: rgb(24 24 27);
-    --cv-card: rgb(9 9 11);
-  }
-  .cv .spin,
-  .cv .pulse,
-  .cv .ping,
-  .cv .grow {
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  .cv .spin {
-    animation: cv-spin 14s linear infinite;
-  }
-  .cv .pulse {
-    animation: cv-pulse 2.4s ease-in-out infinite;
-  }
-  .cv .ping {
-    animation: cv-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-  .cv .blink {
-    animation: cv-blink 1.1s steps(1) infinite;
-  }
-  .cv .flow {
-    stroke-dasharray: 6 8;
-    animation: cv-flow 1.4s linear infinite;
-  }
-  .cv .scan {
-    animation: cv-scan 3.4s ease-in-out infinite alternate;
-  }
-  .cv .drift {
-    animation: cv-drift 5s ease-in-out infinite alternate;
-  }
-  .cv .grow {
-    transform-origin: bottom;
-    animation: cv-grow 2.8s ease-in-out infinite alternate;
-  }
-  .cv .fade {
-    animation: cv-fade 3s ease-in-out infinite;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -483,24 +340,145 @@
     .beam-h,
     .banner-drift,
     .name-glitch,
-    .cv * {
+    .eq > span,
+    .typewriter,
+    .terminal-output,
+    .terminal-caret {
       animation: none !important;
+    }
+    .typewriter {
+      width: auto;
+    }
+    .terminal-output {
+      opacity: 1;
     }
     .beam-v,
     .beam-h {
       display: none;
     }
-    .marquee {
-      mask-image: none;
-      -webkit-mask-image: none;
+    .focus-scope .focus-item,
+    .focus-scope .focus-dim,
+    .book,
+    .shelf-book {
+      transition: none !important;
     }
-    .marquee-track {
-      animation: none;
-      flex-wrap: wrap;
-      width: auto;
+  }
+
+  @keyframes eq-bounce {
+    0%,
+    100% {
+      height: 30%;
     }
-    .marquee-track > [aria-hidden="true"] {
-      display: none;
+    50% {
+      height: 100%;
+    }
+  }
+  .eq > span {
+    display: block;
+    width: 2px;
+    height: 30%;
+    border-radius: 1px;
+    background: #1db954;
+    animation: eq-bounce 0.9s ease-in-out infinite;
+  }
+  .eq > span:nth-child(2) {
+    animation-delay: -0.3s;
+    animation-duration: 1.1s;
+  }
+  .eq > span:nth-child(3) {
+    animation-delay: -0.6s;
+    animation-duration: 0.8s;
+  }
+
+  @keyframes type-in {
+    from {
+      width: 0;
+    }
+    to {
+      width: calc(var(--chars) * 1ch);
+    }
+  }
+  @keyframes fade-in-late {
+    0%,
+    70% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  .typewriter {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    white-space: nowrap;
+    width: 0;
+  }
+  .is-visible .typewriter {
+    animation: type-in 1.4s steps(var(--chars)) 0.6s forwards;
+  }
+  .terminal-output {
+    opacity: 0;
+  }
+  .is-visible .terminal-output {
+    animation: fade-in-late 2.8s ease forwards;
+  }
+  .terminal-caret {
+    animation: caret-blink 1.1s steps(1) infinite;
+  }
+
+  .book {
+    border-radius: 2px 5px 5px 2px;
+    box-shadow:
+      0 1px 1px rgba(0, 0, 0, 0.08),
+      0 10px 22px -10px rgba(0, 0, 0, 0.45),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    transform-origin: left center;
+    transition:
+      transform 0.6s var(--ease-reveal),
+      box-shadow 0.6s var(--ease-reveal);
+  }
+  .book-spine {
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.32),
+      rgba(255, 255, 255, 0.18) 35%,
+      rgba(0, 0, 0, 0.12) 60%,
+      transparent
+    );
+  }
+  .book-sheen {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.22), transparent 38%, transparent 70%, rgba(0, 0, 0, 0.12));
+    mix-blend-mode: soft-light;
+  }
+  .group:hover .book {
+    transform: perspective(900px) rotateY(-14deg) translateY(-6px);
+    box-shadow:
+      0 1px 1px rgba(0, 0, 0, 0.08),
+      18px 24px 32px -16px rgba(0, 0, 0, 0.5),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  }
+
+  .focus-scope .focus-item,
+  .focus-scope .focus-dim {
+    transition:
+      filter 0.45s var(--ease-reveal),
+      opacity 0.45s var(--ease-reveal),
+      transform 0.45s var(--ease-reveal);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .focus-scope:has(.focus-item:hover) .focus-item:not(:hover),
+    .focus-scope:has(.focus-item:hover) .focus-dim {
+      filter: blur(3px);
+      opacity: 0.35;
+    }
+    .focus-scope .focus-item:hover {
+      transform: translateX(6px);
     }
   }
 }

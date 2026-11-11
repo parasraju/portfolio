@@ -1,6 +1,5 @@
 import { npmPackages, projects } from "./projectsData";
 import { Reveal } from "@/components/ui/Reveal";
-import { ProjectCover } from "./ProjectCover";
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -40,9 +39,6 @@ function DownloadIcon({ className }: { className?: string }) {
 function ProjectCard({ project, index }: { project: (typeof projects)[number]; index: number }) {
   return (
     <article style={{ "--i": index } as React.CSSProperties} className="group relative flex h-full flex-col overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c] p-4 hover:-translate-y-1 hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
-      <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" tabIndex={-1} className="-mx-4 -mt-4 mb-4 block overflow-hidden border-b border-zinc-200 dark:border-zinc-800">
-        <ProjectCover slug={project.slug} title={project.name} />
-      </a>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[7px] border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 font-mono text-[13px] font-bold text-zinc-700 dark:text-zinc-300">
@@ -94,33 +90,27 @@ function ProjectCard({ project, index }: { project: (typeof projects)[number]; i
   );
 }
 
-export function ProjectsSection() {
+export function ProjectGrid() {
   return (
-    <section id="projects" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
-      <Reveal className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="font-serif text-[24px] sm:text-[28px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white">Projects</h2>
-        <a href="https://github.com/parasraju?tab=repositories" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
-          View all on GitHub <ArrowUpRightIcon className="h-3 w-3" />
-        </a>
-      </Reveal>
+    <Reveal stagger delay={80} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {projects.map((project, i) => (
+        <ProjectCard key={project.slug} project={project} index={i} />
+      ))}
+    </Reveal>
+  );
+}
 
-      <Reveal stagger delay={80} className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {projects.map((project, i) => (
-          <ProjectCard key={project.slug} project={project} index={i} />
-        ))}
-      </Reveal>
+export function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
+      {children} <ArrowUpRightIcon className="h-3 w-3" />
+    </a>
+  );
+}
 
-      <Reveal className="mt-8">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
-            npm packages
-          </h3>
-          <a href="https://www.npmjs.com/~parasraju" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11.5px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
-            npm profile <ArrowUpRightIcon className="h-3 w-3" />
-          </a>
-        </div>
-
-        <Reveal stagger delay={80} className="mt-2 overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c]">
+export function NpmPackageList() {
+  return (
+        <Reveal stagger delay={80} className="mt-4 overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c]">
           {npmPackages.map((pkg, i) => (
             <a
               key={pkg.name}
@@ -150,7 +140,5 @@ export function ProjectsSection() {
             </a>
           ))}
         </Reveal>
-      </Reveal>
-    </section>
   );
 }
