@@ -13,7 +13,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { SectionHeading, SeeAll } from "@/components/ui/SeeAll";
 import { SiteFooter } from "@/components/ui/SiteFooter";
-import { TerminalPreview } from "@/components/setup/Terminal";
+import { DevelopmentLinks } from "@/components/setup/Development";
 import { BookShelf, MovieStrip } from "@/components/personal/Personal";
 import { SpotifyLastPlayed } from "@/components/spotify/SpotifyLastPlayed";
 
@@ -244,12 +244,7 @@ export default function Home() {
             <SectionHeading title="Development" />
             <p className="mt-1.5 text-[12.5px] text-zinc-500 dark:text-zinc-400">My terminal, gear and setup.</p>
           </Reveal>
-          <Reveal delay={80}>
-            <TerminalPreview />
-          </Reveal>
-          <Reveal>
-            <SeeAll href="/setup/">See my setup</SeeAll>
-          </Reveal>
+          <DevelopmentLinks />
         </section>
 
         <section id="personal" className="scroll-mt-24 py-6 border-t border-dashed border-zinc-200 dark:border-zinc-800">
@@ -262,7 +257,7 @@ export default function Home() {
             <Reveal className="flex items-baseline justify-between gap-2">
               <h3 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">Books</h3>
             </Reveal>
-            <BookShelf limit={6} />
+            <BookShelf limit={4} />
             <Reveal>
               <SeeAll href="/books/">All books</SeeAll>
             </Reveal>

@@ -97,7 +97,6 @@
 :root {
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
   --beam: rgb(24 24 27 / 0.55);
 }
 .dark {
@@ -105,60 +104,6 @@
 }
 
 @layer components {
-  .preloaded #preloader {
-    display: none;
-  }
-
-  @keyframes preloader-curtain {
-    to {
-      transform: translateY(-100%);
-    }
-  }
-  @keyframes preloader-content-out {
-    to {
-      opacity: 0;
-      transform: translateY(-48px);
-    }
-  }
-  @keyframes fade-out {
-    to {
-      opacity: 0;
-    }
-  }
-  @keyframes letter-rise {
-    from {
-      transform: translateY(110%);
-    }
-    to {
-      transform: none;
-    }
-  }
-  @keyframes stage-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-  .preloader-exit {
-    animation: preloader-curtain 1.3s var(--ease-curtain) 0.25s forwards;
-  }
-  .preloader-exit > * {
-    animation: preloader-content-out 0.7s var(--ease-curtain) forwards;
-  }
-  .preloader-letter {
-    display: inline-block;
-    transform: translateY(110%);
-    animation: letter-rise 1s var(--ease-reveal) forwards;
-    animation-delay: calc(200ms + var(--i, 0) * 80ms);
-  }
-  .preloader-stage {
-    animation: stage-in 0.6s var(--ease-reveal);
-  }
-
   .reveal,
   .reveal-stagger > * {
     opacity: 0;
@@ -316,14 +261,6 @@
     html {
       scroll-behavior: auto;
     }
-    .preloader-exit {
-      animation: fade-out 0.3s ease forwards;
-    }
-    .preloader-exit > *,
-    .preloader-letter {
-      animation: none;
-      transform: none;
-    }
     .reveal,
     .reveal-stagger > *,
     .grid-line-v,
@@ -340,17 +277,8 @@
     .beam-h,
     .banner-drift,
     .name-glitch,
-    .eq > span,
-    .typewriter,
-    .terminal-output,
-    .terminal-caret {
+    .eq > span {
       animation: none !important;
-    }
-    .typewriter {
-      width: auto;
-    }
-    .terminal-output {
-      opacity: 1;
     }
     .beam-v,
     .beam-h {
@@ -358,8 +286,7 @@
     }
     .focus-scope .focus-item,
     .focus-scope .focus-dim,
-    .book,
-    .shelf-book {
+    .book {
       transition: none !important;
     }
   }
@@ -388,48 +315,6 @@
   .eq > span:nth-child(3) {
     animation-delay: -0.6s;
     animation-duration: 0.8s;
-  }
-
-  @keyframes type-in {
-    from {
-      width: 0;
-    }
-    to {
-      width: calc(var(--chars) * 1ch);
-    }
-  }
-  @keyframes fade-in-late {
-    0%,
-    70% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @keyframes caret-blink {
-    50% {
-      opacity: 0;
-    }
-  }
-  .typewriter {
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: bottom;
-    white-space: nowrap;
-    width: 0;
-  }
-  .is-visible .typewriter {
-    animation: type-in 1.4s steps(var(--chars)) 0.6s forwards;
-  }
-  .terminal-output {
-    opacity: 0;
-  }
-  .is-visible .terminal-output {
-    animation: fade-in-late 2.8s ease forwards;
-  }
-  .terminal-caret {
-    animation: caret-blink 1.1s steps(1) infinite;
   }
 
   .book {

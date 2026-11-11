@@ -5,33 +5,35 @@ export type SetupItem = {
 };
 
 export type SetupGroup = {
-  id: "terminal" | "gear" | "setup";
+  slug: "terminal" | "gear" | "setup";
   title: string;
-  command: string;
+  heading: string;
   blurb: string;
   items: SetupItem[];
 };
 
 export const setupGroups: SetupGroup[] = [
   {
-    id: "terminal",
+    slug: "terminal",
     title: "Terminal",
-    command: "cat ~/.config/terminal",
-    blurb: "Shell, prompt, fonts and the CLI tools I live in.",
+    heading: "My terminal",
+    blurb: "Shell, prompt, fonts and the command-line tools I use every day.",
     items: [],
   },
   {
-    id: "gear",
+    slug: "gear",
     title: "Gear",
-    command: "ls ~/gear",
+    heading: "My gear",
     blurb: "The hardware on and around my desk.",
     items: [],
   },
   {
-    id: "setup",
+    slug: "setup",
     title: "Setup",
-    command: "tree ~/setup",
+    heading: "My setup",
     blurb: "Editor, apps and the way everything fits together.",
     items: [],
   },
 ];
+
+export const getSetupGroup = (slug: SetupGroup["slug"]) => setupGroups.find((group) => group.slug === slug)!;
