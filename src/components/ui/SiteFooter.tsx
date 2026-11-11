@@ -47,7 +47,6 @@ export function SiteFooter({ className = "" }: { className?: string }) {
         <Link href="/" className="font-serif text-[30px] leading-none tracking-[0.01em] text-zinc-900 transition-opacity hover:opacity-70 dark:text-zinc-100">
           Paras Raju<span className="text-zinc-400 dark:text-zinc-600">.</span>
         </Link>
-        <p className="font-serif text-[16px] italic text-zinc-500 dark:text-zinc-400">Built with curiosity, shipped from an 8 GB laptop.</p>
       </div>
 
       <nav aria-label="Footer" className="mt-7 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
