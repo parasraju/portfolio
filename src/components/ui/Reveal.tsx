@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { useLoading } from "./LoadingProvider";
 
 type RevealProps = {
   children: React.ReactNode;
@@ -11,7 +10,6 @@ type RevealProps = {
 };
 
 export function Reveal({ children, className = "", delay = 0, stagger = false, id }: RevealProps) {
-  const { loaded } = useLoading();
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -31,7 +29,7 @@ export function Reveal({ children, className = "", delay = 0, stagger = false, i
     return () => obs.disconnect();
   }, []);
 
-  const visible = loaded && inView;
+  const visible = inView;
   const style = delay ? ({ "--reveal-delay": `${delay}ms` } as CSSProperties) : undefined;
 
   return (

@@ -39,12 +39,12 @@ export function MoviePoster({ movie, className = "" }: { movie: Movie; className
   );
 }
 
-export function BookShelf({ limit = 6 }: { limit?: number }) {
+export function BookShelf({ limit = 4 }: { limit?: number }) {
   return (
-    <Reveal stagger delay={60} className="shelf mt-4 grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-6 sm:gap-x-3.5">
+    <Reveal stagger delay={60} className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
       {books.slice(0, limit).map((book, i) => (
         <Link key={book.slug} href={`/books/#${book.slug}`} style={{ "--i": i } as React.CSSProperties} className="group block" aria-label={`${book.title} by ${book.author}`}>
-          <BookCover book={book} className="shelf-book" />
+          <BookCover book={book} />
           <p className="mt-2.5 line-clamp-2 text-[11.5px] font-medium leading-snug text-zinc-800 dark:text-zinc-200">{book.title}</p>
           <p className="truncate font-mono text-[9.5px] uppercase tracking-[0.06em] text-zinc-400 dark:text-zinc-500">{book.author}</p>
         </Link>

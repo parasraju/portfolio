@@ -10,7 +10,9 @@ export const pages = [
   { href: "/work/", label: "Work", description: "Projects, npm packages and skills" },
   { href: "/blogs/", label: "Blogs", description: "Essays and poems" },
   { href: "/experience/", label: "Experience", description: "Roles and contributions" },
-  { href: "/setup/", label: "Development", description: "Terminal, gear and setup" },
+  { href: "/terminal/", label: "Terminal", description: "Development · shell and CLI tools" },
+  { href: "/gear/", label: "Gear", description: "Development · hardware" },
+  { href: "/setup/", label: "Setup", description: "Development · editor and apps" },
   { href: "/books/", label: "Books", description: "On my shelf" },
   { href: "/movies/", label: "Movies", description: "Films I love" },
 ] as const;
