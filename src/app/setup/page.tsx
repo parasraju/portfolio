@@ -4,7 +4,7 @@ import { getSetupGroup } from "@/components/setup/setupData";
 
 export const metadata: Metadata = {
   title: "Setup — Paras Raju",
-  description: "Editor, apps and how everything fits together.",
+  description: "Editor, notes, browser and agentic coding tools.",
 };
 
 export default function Page() {

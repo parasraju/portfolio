@@ -1,0 +1,31 @@
+{
+  "updatedAt": "2026-11-11T17:08:47.610Z",
+  "source": "https://api.npmjs.org/downloads",
+  "packages": {
+    "hexlens": {
+      "total": 1002,
+      "version": "0.4.0",
+      "fetchedAt": "2026-11-11T17:08:46.190Z"
+    },
+    "plumber-linter": {
+      "total": 1546,
+      "version": "1.2.0",
+      "fetchedAt": "2026-11-11T17:08:46.400Z"
+    },
+    "@parasraju/plumber-mcp": {
+      "total": 451,
+      "version": "1.0.1",
+      "fetchedAt": "2026-11-11T17:08:47.033Z"
+    },
+    "environmental-peek": {
+      "total": 977,
+      "version": "0.3.0",
+      "fetchedAt": "2026-11-11T17:08:47.242Z"
+    },
+    "react-dismiss": {
+      "total": 587,
+      "version": "0.2.1",
+      "fetchedAt": "2026-11-11T17:08:47.610Z"
+    }
+  }
+}

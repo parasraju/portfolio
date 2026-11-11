@@ -4,7 +4,7 @@ import { getSetupGroup } from "@/components/setup/setupData";
 
 export const metadata: Metadata = {
   title: "Terminal — Paras Raju",
-  description: "Shell, prompt, fonts and command-line tools.",
+  description: "Agentic coding harnesses and the terminal I run them in.",
 };
 
 export default function Page() {

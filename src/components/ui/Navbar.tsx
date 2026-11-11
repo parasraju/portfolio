@@ -63,8 +63,12 @@ export function Navbar() {
           <span aria-hidden="true" className="mx-1.5 h-3.5 w-px bg-zinc-200 dark:bg-zinc-800" />
           <button
             type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle dark mode"
+            onClick={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              toggleTheme({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+            }}
+            data-theme-toggle=""
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             className="flex h-7 w-7 items-center justify-center rounded-full text-zinc-500 transition-colors hover:bg-zinc-900/5 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-white/10 dark:hover:text-zinc-100"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="h-3.5 w-3.5">
