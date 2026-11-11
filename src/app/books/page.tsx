@@ -17,7 +17,7 @@ export default function BooksPage() {
       title="On my shelf"
       description={
         <>
-          Myths, Stoics, science fiction and letters — the books that stayed with me. Also see{" "}
+          Myths, Stoics, science fiction, letters and the classics — the books that stayed with me. Also see{" "}
           <Link href="/movies/" className="font-medium text-zinc-900 underline decoration-dotted underline-offset-4 dark:text-zinc-100">
             movies
           </Link>
