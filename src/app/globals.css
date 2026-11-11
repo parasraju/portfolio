@@ -74,6 +74,37 @@
 }
 
 @layer base {
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after {
+    transition: none !important;
+  }
+  html.theme-fade,
+  html.theme-fade *,
+  html.theme-fade *::before,
+  html.theme-fade *::after {
+    transition:
+      background-color 0.5s ease,
+      border-color 0.5s ease,
+      color 0.5s ease,
+      fill 0.5s ease,
+      stroke 0.5s ease,
+      box-shadow 0.5s ease !important;
+  }
+}
+
+html.theme-vt::view-transition-old(root),
+html.theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-vt::view-transition-new(root) {
+  mask-image: radial-gradient(circle closest-side, #000 86%, transparent 100%);
+  mask-repeat: no-repeat;
+  mask-size: 0 0;
+}
+
+@layer base {
   * {
     @apply border-border outline-ring/50;
   }
@@ -138,7 +169,7 @@
   .grid-dot,
   .index-nav,
   .banner-img,
-  .beam-v,
+  .grid-beams,
   .beam-h {
     transition:
       transform 1.6s var(--ease-out-expo),
@@ -165,7 +196,7 @@
     opacity: 0;
     transform: scale(1.08);
   }
-  .beam-v,
+  .grid-beams,
   .beam-h {
     opacity: 0;
     transition-delay: 1.4s;
@@ -179,43 +210,72 @@
   .is-loaded .grid-dot,
   .is-loaded .banner-img,
   .is-loaded .index-nav,
-  .is-loaded .beam-v,
+  .is-loaded .grid-beams,
   .is-loaded .beam-h {
     opacity: 1;
     transform: none;
   }
 
-  @keyframes beam-y {
-    from {
-      background-position: 0 -30%;
-    }
-    to {
-      background-position: 0 130%;
-    }
-  }
-  @keyframes beam-x {
-    from {
-      background-position: -30% 0;
-    }
-    to {
-      background-position: 130% 0;
-    }
+  .grid-beams {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+    --beam-length: 24vh;
+    --beam-travel: calc(100vh - var(--beam-length));
   }
   .beam-v {
-    background: linear-gradient(to bottom, transparent, var(--beam), transparent) no-repeat;
-    background-size: 1px 22%;
-    animation: beam-y 7s linear infinite;
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: var(--beam-length);
+    background: linear-gradient(to bottom, transparent, var(--beam), transparent);
+    will-change: transform;
+    transform: translate3d(0, calc(var(--beam-progress, 0) * var(--beam-travel)), 0);
   }
   .beam-v-alt {
-    animation-duration: 9s;
-    animation-delay: -4.5s;
+    transform: translate3d(0, calc((1 - var(--beam-progress, 0)) * var(--beam-travel)), 0);
+  }
+  @keyframes beam-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, var(--beam-travel), 0);
+    }
+  }
+  @supports (animation-timeline: scroll()) {
+    .beam-v {
+      animation: beam-scroll linear both;
+      animation-timeline: scroll(root block);
+    }
+    .beam-v-alt {
+      animation-direction: reverse;
+    }
+  }
+
+  @keyframes beam-x {
+    from {
+      transform: translate3d(-100%, 0, 0);
+    }
+    to {
+      transform: translate3d(560%, 0, 0);
+    }
   }
   .beam-h {
-    background: linear-gradient(to right, transparent, var(--beam), transparent) no-repeat;
-    background-size: 18% 1px;
+    overflow: hidden;
+  }
+  .beam-h::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 18%;
+    background: linear-gradient(to right, transparent, var(--beam), transparent);
+    will-change: transform;
     animation: beam-x 8s linear infinite;
   }
-  .beam-h-alt {
+  .beam-h-alt::before {
     animation-direction: reverse;
     animation-duration: 10s;
     animation-delay: -3s;
@@ -274,15 +334,15 @@
       transition: none;
     }
     .beam-v,
-    .beam-h,
+    .beam-h::before,
     .banner-drift,
     .name-glitch,
     .eq > span {
       animation: none !important;
     }
-    .beam-v,
+    .grid-beams,
     .beam-h {
-      display: none;
+      display: none !important;
     }
     .focus-scope .focus-item,
     .focus-scope .focus-dim,

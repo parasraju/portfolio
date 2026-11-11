@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { ScrollProgress } from "./ScrollProgress";
+import { GridBeams } from "./GridBeams";
 import { SiteFooter } from "./SiteFooter";
 
 const DASH_V = "repeating-linear-gradient(to bottom, black 0, black 1px, transparent 1px, transparent 6px)";
@@ -20,10 +21,7 @@ export function PageShell({ eyebrow, title, description, back = { href: "/", lab
     <div id="top" className="relative min-h-screen w-full overflow-x-hidden bg-white dark:bg-black">
       <div className="grid-line-v pointer-events-none absolute top-0 bottom-0 left-[30%] hidden w-0 border-r border-black/30 dark:border-white/[0.15] md:block" style={{ maskImage: DASH_V, WebkitMaskImage: DASH_V }} />
       <div className="grid-line-v pointer-events-none absolute top-0 bottom-0 right-[30%] hidden w-0 border-r border-black/30 dark:border-white/[0.15] md:block" style={{ maskImage: DASH_V, WebkitMaskImage: DASH_V }} />
-      <div className="pointer-events-none fixed inset-0 hidden md:block">
-        <div className="beam-v absolute top-0 bottom-0 left-[30%] w-px" />
-        <div className="beam-v beam-v-alt absolute top-0 bottom-0 right-[30%] w-px" />
-      </div>
+      <GridBeams />
       <ScrollProgress />
 
       <main className={`relative max-w-full overflow-x-clip px-4 pt-24 pb-10 md:mx-[30%] md:px-6 sm:pt-28 ${focusScope ? "focus-scope" : ""}`.trim()}>

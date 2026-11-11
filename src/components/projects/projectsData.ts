@@ -18,8 +18,6 @@ export type NpmPackage = {
   description: string;
   npmUrl: string;
   repoUrl: string;
-  weeklyDownloads: number;
-  monthlyDownloads: number;
 };
 
 const gh = (repo: string) => `https://github.com/parasraju/${repo}`;
@@ -136,8 +134,6 @@ export const npmPackages: NpmPackage[] = [
     description: "Open-source binary intelligence and reverse-engineering framework.",
     npmUrl: npm("hexlens"),
     repoUrl: gh("hexlens"),
-    weeklyDownloads: 24,
-    monthlyDownloads: 50,
   },
   {
     name: "plumber-linter",
@@ -146,8 +142,6 @@ export const npmPackages: NpmPackage[] = [
       "CI/CD pipeline linter that flags hardcoded secrets, leaked credentials, and dead code.",
     npmUrl: npm("plumber-linter"),
     repoUrl: gh("plumber"),
-    weeklyDownloads: 226,
-    monthlyDownloads: 843,
   },
   {
     name: "@parasraju/plumber-mcp",
@@ -156,8 +150,6 @@ export const npmPackages: NpmPackage[] = [
       "Plumber as an MCP server — let your AI coding agent scan repos for leaked secrets and dead code.",
     npmUrl: npm("@parasraju/plumber-mcp"),
     repoUrl: gh("plumber"),
-    weeklyDownloads: 0,
-    monthlyDownloads: 0,
   },
   {
     name: "environmental-peek",
@@ -165,8 +157,6 @@ export const npmPackages: NpmPackage[] = [
     description: "Safely inspect your .env files without leaking secrets.",
     npmUrl: npm("environmental-peek"),
     repoUrl: gh("environmental-peek"),
-    weeklyDownloads: 27,
-    monthlyDownloads: 96,
   },
   {
     name: "react-dismiss",
@@ -175,7 +165,5 @@ export const npmPackages: NpmPackage[] = [
       "A tiny React hook for dismissing UI when users interact outside or press Escape.",
     npmUrl: npm("react-dismiss"),
     repoUrl: gh("react-dismiss"),
-    weeklyDownloads: 4,
-    monthlyDownloads: 15,
   },
 ];

@@ -4,7 +4,7 @@ import { getSetupGroup } from "@/components/setup/setupData";
 
 export const metadata: Metadata = {
   title: "Gear — Paras Raju",
-  description: "The hardware on and around my desk.",
+  description: "The hardware I build everything on.",
 };
 
 export default function Page() {
