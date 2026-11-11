@@ -11,6 +11,7 @@ import { BlogList, SubstackNote } from "@/components/blog/BlogSection";
 import { SearchPalette } from "@/components/search/SearchPalette";
 import { Reveal } from "@/components/ui/Reveal";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { GridBeams } from "@/components/ui/GridBeams";
 import { SectionHeading, SeeAll } from "@/components/ui/SeeAll";
 import { SiteFooter } from "@/components/ui/SiteFooter";
 import { DevelopmentLinks } from "@/components/setup/Development";
@@ -111,10 +112,7 @@ export default function Home() {
       <div className="grid-dot absolute w-[2px] h-[2px] bg-black/50 dark:bg-white/[0.25] pointer-events-none z-10 hidden md:block" style={{ top: "calc(22vh + 112px)", right: "30%", transform: "translate(50%, -50%)" }} />
       <div className="beam-h absolute left-0 right-0 top-[22vh] h-px pointer-events-none" />
       <div className="beam-h beam-h-alt absolute left-0 right-0 top-[calc(22vh+112px)] h-px pointer-events-none" />
-      <div className="fixed inset-0 pointer-events-none hidden md:block">
-        <div className="beam-v absolute top-0 bottom-0 left-[30%] w-px" />
-        <div className="beam-v beam-v-alt absolute top-0 bottom-0 right-[30%] w-px" />
-      </div>
+      <GridBeams />
       <ScrollProgress />
 
       {/* Index nav */}

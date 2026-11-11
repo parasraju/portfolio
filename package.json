@@ -13,7 +13,11 @@
   "bugs": {
     "url": "https://github.com/parasraju/portfolio/issues"
   },
-  "keywords": ["portfolio", "nextjs", "tailwindcss"],
+  "keywords": [
+    "portfolio",
+    "nextjs",
+    "tailwindcss"
+  ],
   "engines": {
     "node": ">=24"
   },
@@ -23,7 +27,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "check": "npm run lint && npm run typecheck && npm run build"
+    "check": "npm run lint && npm run typecheck && npm run build",
+    "stats:npm": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/npm-stats.mjs"
   },
   "dependencies": {
     "next": "16.3.0",

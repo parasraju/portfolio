@@ -1,4 +1,5 @@
 import { npmPackages, projects } from "./projectsData";
+import npmStatsData from "@/data/npm-stats.json";
 import { Reveal } from "@/components/ui/Reveal";
 
 function GitHubIcon({ className }: { className?: string }) {
@@ -108,10 +109,26 @@ export function ExternalLink({ href, children }: { href: string; children: React
   );
 }
 
+type NpmStats = {
+  updatedAt: string | null;
+  packages: Record<string, { total: number; version?: string; fetchedAt?: string } | undefined>;
+};
+
+const npmStats = npmStatsData as NpmStats;
+const compact = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
+const formatCount = (n: number) => compact.format(n);
+const formatUpdated = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
 export function NpmPackageList() {
   return (
+    <>
         <Reveal stagger delay={80} className="mt-4 overflow-hidden rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0b0b0c]">
-          {npmPackages.map((pkg, i) => (
+          {npmPackages.map((pkg, i) => {
+            const stats = npmStats.packages[pkg.name];
+            const total = stats?.total;
+            const version = stats?.version ?? pkg.version;
+            return (
             <a
               key={pkg.name}
               style={{ "--i": i } as React.CSSProperties}
@@ -127,18 +144,29 @@ export function NpmPackageList() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="truncate font-mono text-[12px] font-semibold text-zinc-900 dark:text-white">{pkg.name}</span>
                   <span className="rounded-full border border-zinc-200 dark:border-zinc-800 px-1.5 py-0.5 font-mono text-[9.5px] text-zinc-500 dark:text-zinc-400">
-                    v{pkg.version}
+                    v{version}
                   </span>
                 </div>
                 <p className="mt-0.5 truncate text-[11.5px] text-zinc-500 dark:text-zinc-400">{pkg.description}</p>
               </div>
-              <span className="hidden shrink-0 items-center gap-1 text-[10.5px] text-zinc-400 dark:text-zinc-500 sm:inline-flex">
+              <span
+                title={total === undefined ? "Download count unavailable" : `${total.toLocaleString("en-US")} total downloads`}
+                className="hidden shrink-0 items-center gap-1 text-[10.5px] tabular-nums text-zinc-400 dark:text-zinc-500 sm:inline-flex"
+              >
                 <DownloadIcon className="h-3 w-3" />
-                {pkg.weeklyDownloads > 0 ? `${pkg.weeklyDownloads}/wk` : "new"}
+                {total === undefined ? "—" : total > 0 ? `${formatCount(total)} total` : "new"}
               </span>
               <ArrowUpRightIcon className="h-3.5 w-3.5 shrink-0 text-zinc-300 transition-colors group-hover:text-zinc-700 dark:text-zinc-600 dark:group-hover:text-zinc-300" />
             </a>
-          ))}
+          );
+          })}
         </Reveal>
+        {npmStats.updatedAt && (
+          <p className="mt-2.5 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-400 dark:text-zinc-500">
+            Total downloads via npm · updated{" "}
+            <time dateTime={npmStats.updatedAt}>{formatUpdated(npmStats.updatedAt)}</time> · refreshed weekly
+          </p>
+        )}
+    </>
   );
 }

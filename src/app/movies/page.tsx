@@ -17,7 +17,7 @@ export default function MoviesPage() {
       title="Films I love"
       description={
         <>
-          Quiet romances and one that never lets go. Also see{" "}
+          Quiet romances, hacker thrillers and the Punjabi films I keep rewatching. Also see{" "}
           <Link href="/books/" className="font-medium text-zinc-900 underline decoration-dotted underline-offset-4 dark:text-zinc-100">
             books
           </Link>
@@ -48,6 +48,7 @@ export default function MoviesPage() {
             <h2 className="mt-1 font-serif text-[26px] leading-[1.05] text-zinc-900 transition-colors group-hover:text-zinc-600 dark:text-zinc-50 dark:group-hover:text-zinc-300">
               {movie.title}
             </h2>
+            {movie.starring && <p className="mt-1 text-[12px] text-zinc-500 dark:text-zinc-400">Starring {movie.starring}</p>}
             <p className="mt-2 text-[12.5px] leading-[1.6] text-zinc-600 dark:text-zinc-300">{movie.about}</p>
           </a>
         ))}
