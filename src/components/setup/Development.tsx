@@ -90,7 +90,7 @@ export function DevelopmentLinks() {
 function PointList({ section }: { section: SetupSection }) {
   return (
     <section aria-label={section.title}>
-      <h2 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
+      <h2 className="font-ui text-[12.5px] font-semibold tracking-[-0.005em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
       <ul className="mt-3 list-disc space-y-2.5 pl-5 marker:text-zinc-400 dark:marker:text-zinc-600">
         {section.items.map((item) => (
           <li key={item.name} className="text-[13.5px] leading-[1.6] text-zinc-600 dark:text-zinc-400">
@@ -108,7 +108,7 @@ function HardwareCard({ section }: { section: SetupSection }) {
     <section aria-label={section.title} className="rounded-[10px] border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-[#0b0b0c]">
       <div className="flex items-center gap-2.5">
         {section.icon && <SetupIconGlyph icon={section.icon} />}
-        <h2 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
+        <h2 className="font-ui text-[12.5px] font-semibold tracking-[-0.005em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
       </div>
       {section.items.map((item) => (
         <div key={item.name} className="mt-4">
@@ -117,7 +117,7 @@ function HardwareCard({ section }: { section: SetupSection }) {
             <dl className="mt-3 border-t border-dashed border-zinc-200 dark:border-zinc-800">
               {item.specs.map((spec) => (
                 <div key={spec.label} className="flex items-baseline justify-between gap-4 border-b border-dashed border-zinc-200 py-2 dark:border-zinc-800">
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-400 dark:text-zinc-500">{spec.label}</dt>
+                  <dt className="font-ui text-[12px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">{spec.label}</dt>
                   <dd className="text-right text-[13px] font-medium text-zinc-800 dark:text-zinc-200">{spec.value}</dd>
                 </div>
               ))}
@@ -134,7 +134,7 @@ function SoftwareRow({ section }: { section: SetupSection }) {
     <section aria-label={section.title} className="grid gap-3 border-b border-dashed border-zinc-200 py-4 dark:border-zinc-800 sm:grid-cols-[170px_1fr]">
       <div className="flex items-center gap-2.5 self-start">
         {section.icon && <SetupIconGlyph icon={section.icon} />}
-        <h2 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
+        <h2 className="font-ui text-[12.5px] font-semibold tracking-[-0.005em] text-zinc-500 dark:text-zinc-400">{section.title}</h2>
       </div>
       <ul className="space-y-2.5">
         {section.items.map((item) => (
@@ -215,7 +215,7 @@ export function SetupPage({ group }: { group: SetupGroup }) {
         {group.comingSoon && (
           <Reveal className="mt-4">
             <div className="rounded-[10px] border border-dashed border-zinc-200 px-4 py-5 dark:border-zinc-800">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
+              <p className="font-ui text-[12px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">
                 Coming soon · {group.comingSoon.title}
               </p>
               <p className="mt-1.5 text-[13px] text-zinc-600 dark:text-zinc-400">{group.comingSoon.text}</p>

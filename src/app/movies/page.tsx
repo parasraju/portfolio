@@ -38,11 +38,11 @@ export default function MoviesPage() {
           >
             <div className="relative">
               <MoviePoster movie={movie} className="shadow-[0_18px_40px_-22px_rgba(0,0,0,0.55)]" />
-              <span className="absolute top-2.5 left-2.5 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-white/85 backdrop-blur-sm">
+              <span className="absolute top-2.5 left-2.5 rounded-full bg-black/55 px-2 py-0.5 font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-white/85 backdrop-blur-sm">
                 {movie.year}
               </span>
             </div>
-            <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.14em] text-zinc-400 dark:text-zinc-500">
+            <p className="mt-4 font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">
               {movie.genre} · dir. {movie.director}
             </p>
             <h2 className="mt-1 font-serif text-[26px] leading-[1.05] text-zinc-900 transition-colors group-hover:text-zinc-600 dark:text-zinc-50 dark:group-hover:text-zinc-300">

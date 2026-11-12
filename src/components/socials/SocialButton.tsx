@@ -220,7 +220,7 @@ export function SocialsSection() {
               onTouchEnd={scheduleClose}
               onFocus={(event) => openPreview(platform, event.currentTarget)}
               onBlur={scheduleClose}
-              className="inline-flex h-10 select-none items-center gap-2 rounded-[8px] border border-zinc-200 bg-white px-3 text-[12px] font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/50 dark:border-zinc-800 dark:bg-[#161616] dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-[#202020]"
+              className="ios-btn h-9 select-none gap-2 px-3.5"
             >
               {meta.icon}
               {meta.label}

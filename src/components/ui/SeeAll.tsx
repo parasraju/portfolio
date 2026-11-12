@@ -4,7 +4,7 @@ export function SeeAll({ href, children }: { href: string; children: React.React
   return (
     <Link
       href={href}
-      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 font-mono text-[11px] tracking-[0.03em] text-zinc-600 transition-[border-color,color,transform] duration-300 hover:-translate-y-px hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-800 dark:bg-black dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+      className="ios-btn group mt-4"
     >
       {children}
       <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>

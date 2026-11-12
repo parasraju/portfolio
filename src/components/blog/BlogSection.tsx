@@ -40,7 +40,7 @@ function BlogRow({ post, large }: { post: BlogPost; large: boolean }) {
       className={`focus-item group flex items-center gap-4 border-b border-dashed border-zinc-200 dark:border-zinc-800 ${large ? "py-6" : "py-4"}`}
     >
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-[0.08em] text-zinc-400 dark:text-zinc-500">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-[12px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">
           <span>{formatDate(post.published)}</span>
           <span className="text-zinc-300 dark:text-zinc-700">·</span>
           <span>{post.readTime} min read</span>

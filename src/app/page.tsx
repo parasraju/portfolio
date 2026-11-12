@@ -118,9 +118,9 @@ export default function Home() {
       {/* Index nav */}
       <div className="fixed inset-0 z-50 pointer-events-none hidden lg:block" style={{ width: "calc(100vw - var(--removed-body-scroll-bar-size, 0px))" }}>
         <nav className="index-nav absolute top-[22vh] left-[calc(69%+32px)] pointer-events-auto flex flex-col gap-4 mt-2">
-          <h3 className="font-mono text-[10px] font-bold tracking-[0.2em] text-zinc-400 dark:text-zinc-600 uppercase mb-1">Index</h3>
+          <h3 className="ui-label text-zinc-400 dark:text-zinc-500 mb-1">Index</h3>
           {sections.map((s) => (
-            <a key={s.id} href={`#${s.id}`} onClick={() => setActive(s.id)} className={`font-mono text-[11.5px] tracking-[0.02em] transition-all duration-300 ease-out flex items-center gap-3 ${active === s.id ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400"}`}>
+            <a key={s.id} href={`#${s.id}`} onClick={() => setActive(s.id)} className={`font-ui text-[13px] font-medium tracking-[-0.01em] transition-all duration-300 ease-out flex items-center gap-3 ${active === s.id ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400"}`}>
               <span className={`h-[1px] transition-all duration-300 ease-out ${active === s.id ? "w-4 bg-zinc-900 dark:bg-zinc-100" : "w-0 bg-transparent"}`} />
               {s.label}
             </a>
@@ -160,16 +160,13 @@ export default function Home() {
             </Reveal>
           </div>
           <Reveal delay={180} className="flex items-start justify-end gap-2 sm:gap-3 h-16 sm:h-24 py-1">
-            <button onClick={() => setCmdOpen(true)} className="relative group cursor-pointer transition-all duration-300 active:scale-95" aria-label="Search" aria-haspopup="dialog">
-              <div className="absolute -inset-[4.5px] border border-black/5 dark:border-white/5 rounded-[9px] pointer-events-none transition-colors group-hover:border-black/10 dark:group-hover:border-white/10" />
-              <div className="relative flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-50 hover:bg-zinc-100 dark:bg-[#09090b] dark:hover:bg-[#121214] text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-[5px] text-[11px] font-medium transition-colors border border-black/5 dark:border-white/5 shadow-sm">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="w-3 h-3">
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.3-4.3" />
-                </svg>
-                <span className="hidden md:inline">Search</span>
-                <kbd className="hidden sm:inline rounded border border-black/10 dark:border-white/10 px-1 py-0.5 text-[9.5px] leading-none">⌘K</kbd>
-              </div>
+            <button type="button" onClick={() => setCmdOpen(true)} className="ios-btn ios-btn-muted cursor-pointer px-3" aria-label="Search" aria-haspopup="dialog">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="w-3.5 h-3.5">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <span className="hidden md:inline">Search</span>
+              <kbd className="hidden sm:inline font-ui text-[11px] font-medium opacity-70">⌘K</kbd>
             </button>
           </Reveal>
         </div>
@@ -197,10 +194,10 @@ export default function Home() {
           </Reveal>
           <Reveal delay={420}>
           <div className="flex flex-wrap gap-2 mt-5 max-w-full">
-            <a href="https://cal.com/paras-raju/meeting" target="_blank" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-[12px] font-medium hover:opacity-90 hover:-translate-y-px transition-[opacity,transform] duration-300">
-              <CalendarIcon className="w-3.5 h-3.5" /> Book an intro call <span className="text-white/60 dark:text-zinc-500 text-[10px]">cal.com</span>
+            <a href="https://cal.com/paras-raju/meeting" target="_blank" className="ios-btn ios-btn-primary">
+              <CalendarIcon className="w-3.5 h-3.5" /> Book an intro call <span className="text-[11px] font-medium text-white/70">cal.com</span>
             </a>
-            <a href="mailto:rajuparas766@gmail.com" className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 text-[12px] font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:-translate-y-px transition-[background-color,transform] duration-300">
+            <a href="mailto:rajuparas766@gmail.com" className="ios-btn group">
               Send an email <ArrowUpRightIcon className="w-3 h-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           </div>
@@ -253,7 +250,7 @@ export default function Home() {
 
           <div className="mt-6">
             <Reveal className="flex items-baseline justify-between gap-2">
-              <h3 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">Books</h3>
+              <h3 className="font-ui text-[12.5px] font-semibold tracking-[-0.005em] text-zinc-500 dark:text-zinc-400">Books</h3>
             </Reveal>
             <BookShelf limit={4} />
             <Reveal>
@@ -263,7 +260,7 @@ export default function Home() {
 
           <div className="mt-9">
             <Reveal className="flex items-baseline justify-between gap-2">
-              <h3 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">Movies</h3>
+              <h3 className="font-ui text-[12.5px] font-semibold tracking-[-0.005em] text-zinc-500 dark:text-zinc-400">Movies</h3>
             </Reveal>
             <MovieStrip limit={4} />
             <Reveal>
@@ -280,7 +277,7 @@ export default function Home() {
             </blockquote>
             <div className="mt-8 sm:mt-9 flex items-center justify-center gap-3 sm:gap-4">
               <span className="h-px w-7 sm:w-10 bg-zinc-300 dark:bg-zinc-700" />
-              <span className="font-mono text-[10px] tracking-[0.28em] text-zinc-500 uppercase">Tyrell Wellick</span>
+              <span className="font-ui text-[12px] font-semibold tracking-[-0.005em] text-zinc-500">Tyrell Wellick</span>
               <span className="h-px w-7 sm:w-10 bg-zinc-300 dark:bg-zinc-700" />
             </div>
           </Reveal>

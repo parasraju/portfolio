@@ -80,12 +80,14 @@ export function GitHubContributions() {
     <div className="mt-5 overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h3 className="font-serif text-[22px] sm:text-[25px] font-normal tracking-[0.005em] text-zinc-900 dark:text-white">Open Source Contributions</h3>
-        <div className="flex rounded-[8px] border border-zinc-200 dark:border-zinc-800 overflow-hidden p-0.5 bg-zinc-100 dark:bg-[#111111] self-start sm:self-auto">
+        <div className="flex gap-1.5 self-start sm:self-auto">
           {(["merged", "open", "closed"] as Tab[]).map((t) => (
             <button
               key={t}
+              type="button"
               onClick={() => setTab(t)}
-              className={`px-3 py-1 text-[11px] font-medium rounded-[6px] capitalize transition-all duration-150 ${tab === t ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm border border-zinc-200 dark:border-zinc-700" : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"}`}
+              aria-pressed={tab === t}
+              className={`ios-btn ios-btn-sm ${tab === t ? "" : "ios-btn-muted"}`}
             >
               {t === "merged" ? "Merged" : t === "open" ? "Open" : "Closed"}
             </button>

@@ -26,11 +26,11 @@ export function PageShell({ eyebrow, title, description, back = { href: "/", lab
 
       <main className={`relative max-w-full overflow-x-clip px-4 pt-24 pb-10 md:mx-[30%] md:px-6 sm:pt-28 ${focusScope ? "focus-scope" : ""}`.trim()}>
         <Reveal className={`border-b border-dashed border-zinc-200 pb-7 dark:border-zinc-800 ${dim}`.trim()}>
-          <Link href={back.href} className="group inline-flex items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-zinc-400 transition-colors hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-zinc-100">
+          <Link href={back.href} className="ios-btn ios-btn-sm ios-btn-muted group">
             <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:-translate-x-1">←</span>
             {back.label}
           </Link>
-          <p className="mt-6 font-mono text-[10.5px] uppercase tracking-[0.22em] text-zinc-400 dark:text-zinc-500">{eyebrow}</p>
+          <p className="mt-6 font-ui text-[12.5px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">{eyebrow}</p>
           <h1 className="mt-2 font-serif text-[40px] font-normal leading-[1] tracking-[-0.01em] text-zinc-900 dark:text-zinc-50 sm:text-[52px]">{title}</h1>
           {description && <div className="mt-4 max-w-[540px] text-[14px] leading-relaxed text-zinc-600 dark:text-zinc-400">{description}</div>}
         </Reveal>

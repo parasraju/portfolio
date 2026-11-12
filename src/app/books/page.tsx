@@ -38,7 +38,7 @@ export default function BooksPage() {
           >
             <BookCover book={book} className="w-[92px] shrink-0 sm:w-[100px]" eager={i < 4} />
             <div className="min-w-0 pt-1">
-              <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-zinc-400 dark:text-zinc-500">
+              <p className="font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">
                 {book.genre} · {book.year}
               </p>
               <h2 className="mt-1 font-serif text-[22px] leading-[1.1] text-zinc-900 dark:text-zinc-50">{book.title}</h2>
