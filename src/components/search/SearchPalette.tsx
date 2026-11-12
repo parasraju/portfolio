@@ -311,7 +311,7 @@ export function SearchPalette({ onClose, onToggleTheme }: SearchPaletteProps) {
           ) : (
             groups.map((group) => (
               <div key={group.label} className="mb-1 last:mb-0">
-                <div className="px-2 pb-1 pt-2 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-zinc-400 dark:text-zinc-500">
+                <div className="px-2 pb-1 pt-2 font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">
                   {group.label}
                 </div>
                 {group.items.map((item) => {

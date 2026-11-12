@@ -46,7 +46,7 @@ export function BookShelf({ limit = 4 }: { limit?: number }) {
         <Link key={book.slug} href={`/books/#${book.slug}`} style={{ "--i": i } as React.CSSProperties} className="group block" aria-label={`${book.title} by ${book.author}`}>
           <BookCover book={book} />
           <p className="mt-2.5 line-clamp-2 text-[11.5px] font-medium leading-snug text-zinc-800 dark:text-zinc-200">{book.title}</p>
-          <p className="truncate font-mono text-[9.5px] uppercase tracking-[0.06em] text-zinc-400 dark:text-zinc-500">{book.author}</p>
+          <p className="truncate font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-500">{book.author}</p>
         </Link>
       ))}
     </Reveal>
@@ -62,7 +62,7 @@ export function MovieStrip({ limit = 4 }: { limit?: number }) {
             <MoviePoster movie={movie} />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 rounded-b-[8px] bg-gradient-to-t from-black/85 via-black/40 to-transparent px-2.5 pt-10 pb-2.5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
               <p className="font-serif text-[16px] leading-tight text-white">{movie.title}</p>
-              <p className="mt-0.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-white/70">{movie.year}</p>
+              <p className="mt-0.5 font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-white/70">{movie.year}</p>
             </div>
           </div>
           <p className="mt-2 truncate text-[11.5px] font-medium text-zinc-800 dark:text-zinc-200 sm:hidden">{movie.title}</p>

@@ -38,7 +38,7 @@ const COLUMNS = [
   },
 ] as const;
 
-const linkClass = "text-[12.5px] text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100";
+const linkClass = "font-ui text-[13px] font-medium tracking-[-0.01em] text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100";
 
 export function SiteFooter({ className = "" }: { className?: string }) {
   return (
@@ -52,7 +52,7 @@ export function SiteFooter({ className = "" }: { className?: string }) {
       <nav aria-label="Footer" className="mt-7 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
         {COLUMNS.map((column) => (
           <div key={column.title}>
-            <h2 className="font-mono text-[9.5px] font-semibold uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-600">{column.title}</h2>
+            <h2 className="font-ui text-[11.5px] font-semibold tracking-[-0.005em] text-zinc-400 dark:text-zinc-600">{column.title}</h2>
             <ul className="mt-2.5 space-y-1.5">
               {column.links.map((link) => (
                 <li key={link.href}>
@@ -72,11 +72,11 @@ export function SiteFooter({ className = "" }: { className?: string }) {
         ))}
       </nav>
 
-      <div className="mt-8 flex items-center justify-between gap-4 border-t border-dashed border-zinc-200 pt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-400 dark:border-zinc-800 dark:text-zinc-600">
+      <div className="mt-8 flex items-center justify-between gap-4 border-t border-dashed border-zinc-200 pt-4 font-ui text-[12px] font-medium tracking-[-0.005em] text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
         <span>
           © <CurrentYear /> Paras Raju
         </span>
-        <a href="#top" className="group inline-flex items-center gap-1.5 transition-colors hover:text-zinc-900 dark:hover:text-zinc-200">
+        <a href="#top" className="ios-btn ios-btn-sm ios-btn-muted group">
           Back to top
           <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5">↑</span>
         </a>
