@@ -15,7 +15,7 @@ const SCLERA = 2;
 const TEETH = 3;
 const MOUTH = 4;
 const TONGUE = 5;
-const STREAK = 6;
+const TEAR = 6;
 const IRIS = 7;
 const PUPIL = 8;
 const GLINT = 9;
@@ -24,6 +24,9 @@ const MAT_COUNT = 11;
 const LEVELS = 14;
 
 const RAMP = " .:-=+*o#%@";
+const GLYPHS = `${RAMP}|O`;
+const TEAR_STREAK = RAMP.length;
+const TEAR_DROP = RAMP.length + 1;
 const BASE_TILT = -0.3;
 const IRIS_R = 0.066;
 const PUPIL_R = 0.028;
@@ -36,7 +39,7 @@ const EYES: Ellipse[] = [
 ];
 const MOUTH_SHAPE: Ellipse = { x: 0.13, y: 0.57, rx: 0.37, ry: 0.27, rot: -0.38 };
 const ALBEDO = [0, 0.95, 1.35, 1.3, 0.1, 0.5, 0.62, 1, 0.1, 1.5, 1];
-const GLOSS = [0, 0.55, 0.6, 0.45, 0, 0.2, 0.3, 0.5, 0.4, 0, 0.7];
+const GLOSS = [0, 0.55, 0.6, 0.45, 0, 0.2, 0.9, 0.5, 0.4, 0, 0.7];
 
 function toLocal(e: Ellipse, px: number, py: number): [number, number] {
   const c = Math.cos(e.rot);
@@ -82,7 +85,58 @@ function smoothstep(a: number, b: number, x: number) {
   return t * t * (3 - 2 * t);
 }
 
-type Texture = { nx: Float32Array; ny: Float32Array; nz: Float32Array; ao: Float32Array; ink: Float32Array; mat: Uint8Array; eye: Int8Array };
+type Texture = {
+  nx: Float32Array;
+  ny: Float32Array;
+  nz: Float32Array;
+  ao: Float32Array;
+  ink: Float32Array;
+  mat: Uint8Array;
+  eye: Int8Array;
+  tearS: Int8Array;
+  tearT: Float32Array;
+};
+
+type TearStream = { pts: [number, number][]; w0: number; w1: number; beads: number[]; falls: boolean; speed: number };
+
+const TEARS: TearStream[] = [
+  { pts: [[-0.4, 0.05], [-0.43, 0.25], [-0.47, 0.45], [-0.5, 0.6], [-0.47, 0.74]], w0: 0.034, w1: 0.05, beads: [0.34, 0.7, 1], falls: true, speed: 0.34 },
+  { pts: [[-0.22, 0.02], [-0.25, 0.18], [-0.3, 0.33], [-0.33, 0.47]], w0: 0.028, w1: 0.04, beads: [0.5, 1], falls: false, speed: 0.42 },
+  { pts: [[0.38, -0.21], [0.44, -0.02], [0.52, 0.2], [0.58, 0.4], [0.6, 0.55]], w0: 0.034, w1: 0.05, beads: [0.4, 0.78, 1], falls: true, speed: 0.3 },
+  { pts: [[0.18, -0.24], [0.2, -0.08], [0.23, 0.07]], w0: 0.027, w1: 0.036, beads: [1], falls: false, speed: 0.5 },
+];
+
+type StreamPath = { pts: [number, number][]; cum: number[]; total: number };
+
+const TEAR_PATHS: StreamPath[] = TEARS.map(({ pts }) => {
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return { pts, cum, total: cum[cum.length - 1] };
+});
+
+function nearestOnStream(path: StreamPath, px: number, py: number) {
+  let best = Infinity;
+  let bestT = 0;
+  const { pts, cum, total } = path;
+  for (let i = 1; i < pts.length; i++) {
+    const [ax, ay] = pts[i - 1];
+    const vx = pts[i][0] - ax;
+    const vy = pts[i][1] - ay;
+    const u = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy)));
+    const d = Math.hypot(px - ax - vx * u, py - ay - vy * u);
+    if (d < best) {
+      best = d;
+      bestT = (cum[i - 1] + u * (cum[i] - cum[i - 1])) / total;
+    }
+  }
+  return { d: best, t: bestT };
+}
+
+function tearWidth(stream: TearStream, t: number) {
+  let w = stream.w0 + (stream.w1 - stream.w0) * t;
+  for (const b of stream.beads) w += 0.024 * Math.exp(-(((t - b) / 0.045) ** 2));
+  return w;
+}
 
 let cachedTexture: Texture | null = null;
 
@@ -93,6 +147,8 @@ function buildTexture(): Texture {
   const disp = new Float32Array(n);
   const mat = new Uint8Array(n);
   const eye = new Int8Array(n).fill(-1);
+  const tearS = new Int8Array(n).fill(-1);
+  const tearT = new Float32Array(n);
   const inkMap = new Float32Array(n);
 
   const corner = (s: number) => {
@@ -210,19 +266,18 @@ function buildTexture(): Texture {
       }
 
       if (m === SKIN) {
-        for (let k = 0; k < EYES.length; k++) {
-          const ey = EYES[k];
-          const start = ey.y + ey.ry * 0.85;
-          const len = k === 0 ? 0.55 : 0.4;
-          if (y > start && y < start + len) {
-            const p = (y - start) / len;
-            const cx = ey.x + (k === 0 ? 0.09 : -0.07) + 0.02 * Math.sin((y - start) * 12 + k * 2);
-            const width = 0.012 + 0.012 * p;
-            if (Math.abs(x - cx) < width * (1 - p * 0.6)) {
-              m = STREAK;
-              f -= 0.006;
-            }
+        for (let s = 0; s < TEARS.length; s++) {
+          const { d, t } = nearestOnStream(TEAR_PATHS[s], x, y);
+          const w = tearWidth(TEARS[s], t);
+          if (d < w) {
+            m = TEAR;
+            tearS[idx] = s;
+            tearT[idx] = t;
+            f += 0.06 * Math.sqrt(1 - (d / w) ** 2);
+            ink = 0;
+            break;
           }
+          mark(d - w, 0.018, 0.95);
         }
       }
 
@@ -252,7 +307,7 @@ function buildTexture(): Texture {
     }
   }
 
-  cachedTexture = { nx, ny, nz, ao, ink: inkMap, mat, eye };
+  cachedTexture = { nx, ny, nz, ao, ink: inkMap, mat, eye, tearS, tearT };
   return cachedTexture;
 }
 
@@ -343,7 +398,7 @@ export class BehelitRenderer {
     base[TEETH] = mixHex(theme.bone, theme.metal, 0.15);
     base[MOUTH] = mixHex(theme.face, "#000000", 0.62);
     base[TONGUE] = mixHex(theme.face, "#3a0606", 0.35);
-    base[STREAK] = mixHex(theme.face, "#000000", 0.42);
+    base[TEAR] = this.light ? mixHex(theme.iris, "#0b1c33", 0.2) : mixHex(theme.bone, "#a9d4ff", 0.55);
     base[IRIS] = theme.iris;
     base[PUPIL] = this.light ? "#050505" : mixHex(theme.bg, "#000000", 0.3);
     base[GLINT] = "#ffffff";
@@ -383,6 +438,11 @@ export class BehelitRenderer {
     this.order = new Uint16Array(cells);
     this.scale = Math.min((this.h * 0.82) / 2.1, this.w * 0.47);
     if (!this.raf) this.draw(performance.now());
+  }
+
+  syncRect() {
+    const rect = this.canvas.getBoundingClientRect();
+    this.rect = { left: rect.left, top: rect.top };
   }
 
   setPointer(x: number, y: number) {
@@ -480,6 +540,13 @@ export class BehelitRenderer {
     const gn = gm > 1 ? 1 / gm : 1;
     const pupils = EYES.map((e) => ({ x: e.x + gx * gn * e.rx * 0.5, y: e.y + gy * gn * e.ry * 0.42 }));
     const pupilR = PUPIL_R * (1 - 0.35 * this.fear);
+    const clock = this.opts.reducedMotion ? 0 : now / 1000;
+    const drops = new Float32Array(TEARS.length * 2);
+    TEARS.forEach((s, i) => {
+      const p = (clock * s.speed + i * 0.37) % 1;
+      drops[i * 2] = p;
+      drops[i * 2 + 1] = (p + 0.5) % 1;
+    });
 
     let l2x = this.head.x * 0.9;
     let l2y = this.head.y * 0.9;
@@ -546,6 +613,16 @@ export class BehelitRenderer {
         else if (m === MOUTH) lum = 0.035;
         else lum = (tex.ao[idx] * (0.16 + 0.66 * d1 + 0.16 * d2) * ALBEDO[m] + spec * GLOSS[m]) * ink;
 
+        let tearPulse = 0;
+        if (m === TEAR) {
+          const s = tex.tearS[idx] * 2;
+          const tt = tex.tearT[idx];
+          const a = tt - drops[s];
+          const b = tt - drops[s + 1];
+          tearPulse = Math.exp(-(a * a) / 0.002) + Math.exp(-(b * b) / 0.002);
+          lum = 0.62 + 0.25 * d1 + spec * GLOSS[TEAR] + 0.4 * tearPulse;
+        }
+
         if (m === SCLERA) {
           const p = pupils[tex.eye[idx]];
           const ddx = fx - p.x;
@@ -566,7 +643,7 @@ export class BehelitRenderer {
         }
 
         lum = lum < 0 ? 0 : lum > 1 ? 1 : lum;
-        const v = this.light ? 1 - lum : lum;
+        const v = this.light && m !== TEAR ? 1 - lum : lum;
         const g = Math.min(rampLen - 1, Math.floor(v * rampLen));
         if (g === 0) {
           this.keys[cell] = skip;
@@ -575,7 +652,7 @@ export class BehelitRenderer {
         const level = Math.min(LEVELS - 1, Math.floor(v * LEVELS));
         const key = m * LEVELS + level;
         this.keys[cell] = key;
-        this.glyphs[cell] = g;
+        this.glyphs[cell] = m === TEAR ? (tearPulse > 0.45 ? TEAR_DROP : TEAR_STREAK) : g;
         counts[key]++;
       }
     }
@@ -603,10 +680,11 @@ export class BehelitRenderer {
       }
       const r = (i / cols) | 0;
       const c = i - r * cols;
-      ctx.fillText(RAMP[this.glyphs[i]], c * cw + cw / 2, r * ch + ch / 2);
+      ctx.fillText(GLYPHS[this.glyphs[i]], c * cw + cw / 2, r * ch + ch / 2);
     }
 
     this.drawChain(now);
+    this.drawFallingTears(drops);
 
     const eyesScreen = pupils.map((p) => {
       const s = this.faceToScreen(p.x, p.y);
@@ -619,6 +697,29 @@ export class BehelitRenderer {
       lead = d1 < d0 ? 1 : 0;
     }
     this.opts.onFrame?.({ eyes: eyesScreen, lead, gaze: { ...this.gaze }, fear: this.fear, hasPointer });
+  }
+
+  private drawFallingTears(drops: Float32Array) {
+    if (this.opts.reducedMotion) return;
+    const { ctx, ch } = this;
+    TEARS.forEach((stream, i) => {
+      if (!stream.falls) return;
+      const [ex, ey] = stream.pts[stream.pts.length - 1];
+      const end = this.faceToScreen(ex, ey);
+      for (const p of [drops[i * 2], drops[i * 2 + 1]]) {
+        const seconds = p / stream.speed;
+        if (seconds > 0.9) continue;
+        const fall = 0.5 * 2.4 * this.scale * seconds * seconds + ch * 0.6;
+        const fade = 1 - seconds / 0.9;
+        const level = Math.max(2, Math.round((LEVELS - 1) * fade));
+        ctx.fillStyle = this.palette[TEAR * LEVELS + level];
+        ctx.fillText(fall > ch * 2.5 ? "o" : "0", end.x, end.y + fall);
+        if (fall > ch * 1.6) {
+          ctx.fillStyle = this.palette[TEAR * LEVELS + Math.max(1, level - 4)];
+          ctx.fillText("'", end.x, end.y + fall - ch * 0.95);
+        }
+      }
+    });
   }
 
   private drawChain(now: number) {

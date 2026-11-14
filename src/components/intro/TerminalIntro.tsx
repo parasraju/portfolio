@@ -1,5 +1,14 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import { markIntroEntered } from "@/lib/intro";
 import { setTheme as setSiteTheme } from "@/lib/theme";
 import { BehelitRenderer, type GazeState } from "./behelit";
@@ -10,11 +19,17 @@ import { TERMINAL_THEMES, loadTerminalTheme, saveTerminalTheme, themeById, theme
 type Row = { file: number; ln: number | null; tokens: Token[]; text: string; header?: boolean };
 
 const CHARS_PER_SECOND = 620;
-const PREFILL_ROWS = 24;
 const CARET = '<span class="ti-caret"> </span>';
 const FILE_LINES = INTRO_FILES.map((f) => f.code.split("\n").length);
-const DEFAULT_MESSAGE = "the behelit stirs. paras raju — engineer, builder of tools. enter if you dare.";
+const DEFAULT_MESSAGE = "the behelit weeps. paras raju — engineer, builder of tools. enter if you dare.";
 const NEAR_MESSAGE = "it sees you.";
+const SPLASH_TITLE = "Paras Portfolio";
+const SPLASH_SUB = "~/paras $ ./boot --summon behelit";
+const FACE_CMD = ":!./face --track";
+const MOBILE_QUERY = "(max-width: 767px)";
+const MOBILE_CODE_MS = 9000;
+const MOBILE_FACE_MS = 9000;
+const MANUAL_SCROLL_MS = 6000;
 
 function buildRows(): Row[] {
   const rows: Row[] = [];
@@ -38,8 +53,24 @@ function fuzzy(query: string, name: string) {
   return i === query.length;
 }
 
+function subscribeMobile(callback: () => void) {
+  const media = window.matchMedia(MOBILE_QUERY);
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+
+function useMobile() {
+  return useSyncExternalStore(
+    subscribeMobile,
+    () => window.matchMedia(MOBILE_QUERY).matches,
+    () => false,
+  );
+}
+
 export function TerminalIntro({ onDone }: { onDone: () => void }) {
   const reducedMotion = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, []);
+  const mobile = useMobile();
+  const [booting, setBooting] = useState(true);
   const [themeId, setThemeId] = useState(() =>
     loadTerminalTheme(document.documentElement.classList.contains("dark") ? "dark" : "light").id,
   );
@@ -50,13 +81,16 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   const theme = themeById(preview ?? themeId);
 
   const rootRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
   const paneRef = useRef<HTMLDivElement>(null);
   const linesRef = useRef<HTMLDivElement>(null);
+  const faceRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const readoutRef = useRef<HTMLPreElement>(null);
   const pathRef = useRef<HTMLSpanElement>(null);
   const posRef = useRef<HTMLSpanElement>(null);
   const msgRef = useRef<HTMLSpanElement>(null);
+  const cmdlineRef = useRef<HTMLDivElement>(null);
   const enterRef = useRef<HTMLButtonElement>(null);
   const themeBtnRef = useRef<HTMLButtonElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -64,10 +98,16 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   const dashRef = useRef<SVGLineElement>(null);
   const solidRef = useRef<SVGLineElement>(null);
   const boxRef = useRef<SVGRectElement>(null);
+  const splashRef = useRef<HTMLDivElement>(null);
+  const splashTitleRef = useRef<HTMLSpanElement>(null);
+  const splashSubRef = useRef<HTMLSpanElement>(null);
   const rendererRef = useRef<BehelitRenderer | null>(null);
   const themeRef = useRef<TerminalTheme>(theme);
   const leavingRef = useRef(false);
   const pickerOpenRef = useRef(false);
+  const liveRef = useRef(false);
+  const skipSplashRef = useRef<() => void>(() => {});
+  const userScrollRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     themeRef.current = theme;
@@ -81,6 +121,47 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     enterRef.current?.focus({ preventScroll: true });
   }, []);
+
+  useEffect(() => {
+    const splash = splashRef.current;
+    const title = splashTitleRef.current;
+    const sub = splashSubRef.current;
+    if (!splash || !title || !sub) return;
+    const timers: number[] = [];
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      timers.forEach(clearTimeout);
+      liveRef.current = true;
+      setBooting(false);
+    };
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+    skipSplashRef.current = finish;
+
+    if (reducedMotion) {
+      title.textContent = SPLASH_TITLE;
+      sub.textContent = SPLASH_SUB;
+      at(1100, finish);
+    } else {
+      let t = 200;
+      for (let i = 1; i <= SPLASH_TITLE.length; i++) {
+        t += 45 + Math.random() * 45;
+        at(t, () => (title.textContent = SPLASH_TITLE.slice(0, i)));
+      }
+      t += 250;
+      at(t, () => splash.classList.add("is-sub"));
+      for (let i = 1; i <= SPLASH_SUB.length; i++) {
+        t += 12 + Math.random() * 10;
+        at(t, () => (sub.textContent = SPLASH_SUB.slice(0, i)));
+      }
+      t += 550;
+      at(t, () => splash.classList.add("is-out"));
+      t += 600;
+      at(t, finish);
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [reducedMotion]);
 
   useEffect(() => {
     const pane = paneRef.current;
@@ -119,7 +200,13 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
     if (reducedMotion) {
       lines.forEach((el) => (el.hidden = false));
       setStatus(2, 0);
-      return;
+      const onUser = () => userScrollRef.current();
+      pane.addEventListener("wheel", onUser, { passive: true });
+      pane.addEventListener("touchmove", onUser, { passive: true });
+      return () => {
+        pane.removeEventListener("wheel", onUser);
+        pane.removeEventListener("touchmove", onUser);
+      };
     }
 
     let rowIdx = 0;
@@ -128,11 +215,10 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
     let last = performance.now();
     let scroll = 0;
     let manualUntil = 0;
+    let revealed = false;
     let caretRow = -1;
     let caretChars = -1;
     let raf = 0;
-
-    for (; rowIdx < PREFILL_ROWS; rowIdx++) lines[rowIdx].hidden = false;
 
     const paintCaret = (i: number, n: number) => {
       if (i === caretRow && n === caretChars) return;
@@ -146,8 +232,16 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       texts[i].innerHTML = (rows[i].header ? `<span class="tk-c ti-hd">${escapeHtml(rows[i].text.slice(0, n))}</span>` : tokensToHtml(rows[i].tokens, n)) + CARET;
     };
 
+    const showRow = (i: number) => {
+      lines[i].hidden = false;
+      lines[i].classList.remove("ti-ghost");
+    };
+
     const restart = () => {
-      lines.forEach((el) => (el.hidden = true));
+      lines.forEach((el) => {
+        el.hidden = true;
+        el.classList.remove("ti-ghost");
+      });
       if (caretRow >= 0) {
         texts[caretRow].innerHTML = full[caretRow];
         lines[caretRow].classList.remove("ti-cur");
@@ -157,21 +251,33 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       rowIdx = 0;
       charIdx = 0;
       scroll = 0;
+      revealed = false;
       pane.scrollTop = 0;
+    };
+
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      const from = charIdx > 0 ? rowIdx + 1 : rowIdx;
+      for (let i = from; i < lines.length; i++) {
+        lines[i].hidden = false;
+        lines[i].classList.add("ti-ghost");
+      }
     };
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
       const dt = Math.min(64, now - last);
       last = now;
+      if (!liveRef.current) return;
 
-      if (rowIdx >= rows.length && now >= pauseUntil) restart();
+      if (rowIdx >= rows.length && now >= pauseUntil && now > manualUntil) restart();
 
       let budget = ((dt * CHARS_PER_SECOND) / 1000) * (0.45 + Math.random() * 1.1);
       while (budget > 0 && rowIdx < rows.length && now >= pauseUntil) {
         const row = rows[rowIdx];
         if (charIdx === 0) {
-          lines[rowIdx].hidden = false;
+          showRow(rowIdx);
           charIdx = row.text.length - row.text.trimStart().length;
         }
         const take = Math.min(budget, row.text.length - charIdx);
@@ -195,41 +301,55 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         setStatus(caretRow, caretChars);
       }
 
-      if (caretRow >= 0 && now > manualUntil) {
+      if (now <= manualUntil) {
+        scroll = pane.scrollTop;
+      } else if (caretRow >= 0) {
         const target = Math.max(0, lines[caretRow].offsetTop - pane.clientHeight * 0.62);
         scroll += (target - scroll) * 0.16;
         pane.scrollTop = scroll;
       }
     };
 
-    const onWheel = (event: WheelEvent) => {
-      manualUntil = performance.now() + 4000;
-      scroll = Math.max(0, Math.min(pane.scrollHeight - pane.clientHeight, pane.scrollTop + event.deltaY));
-      pane.scrollTop = scroll;
+    const onUser = () => {
+      manualUntil = performance.now() + MANUAL_SCROLL_MS;
+      reveal();
+      userScrollRef.current();
+    };
+    const onPanePointer = (event: PointerEvent) => {
+      if (event.offsetX > pane.clientWidth) onUser();
     };
 
     setStatus(0, 0);
-    pane.addEventListener("wheel", onWheel, { passive: true });
+    pane.addEventListener("wheel", onUser, { passive: true });
+    pane.addEventListener("touchmove", onUser, { passive: true });
+    pane.addEventListener("pointerdown", onPanePointer);
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
-      pane.removeEventListener("wheel", onWheel);
+      pane.removeEventListener("wheel", onUser);
+      pane.removeEventListener("touchmove", onUser);
+      pane.removeEventListener("pointerdown", onPanePointer);
     };
   }, [reducedMotion]);
 
   useEffect(() => {
+    const root = rootRef.current;
+    const main = mainRef.current;
+    const face = faceRef.current;
     const canvas = canvasRef.current;
     const readout = readoutRef.current;
     const dash = dashRef.current;
     const solid = solidRef.current;
     const box = boxRef.current;
     const msg = msgRef.current;
-    if (!canvas || !readout || !dash || !solid || !box || !msg) return;
+    if (!root || !main || !face || !canvas || !readout || !dash || !solid || !box || !msg) return;
 
     const pointer = { x: 0, y: 0, mouse: false, target: "None", speed: 0, t: 0 };
     let message = DEFAULT_MESSAGE;
     let shown = 0;
     let readoutText = "";
+    let away = false;
+    let faceShown = !mobile;
 
     const onFrame = (state: GazeState) => {
       const want = state.fear > 0.55 ? NEAR_MESSAGE : DEFAULT_MESSAGE;
@@ -237,12 +357,12 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         message = want;
         shown = 0;
       }
-      if (shown <= message.length) {
+      if (faceShown && shown <= message.length) {
         msg.textContent = message.slice(0, shown);
         shown += reducedMotion ? message.length + 1 : 1;
       }
 
-      const visible = state.hasPointer && pointer.mouse;
+      const visible = faceShown && !away && state.hasPointer && pointer.mouse;
       const eye = state.eyes[state.lead];
       if (visible) {
         box.setAttribute("x", String(pointer.x - 14));
@@ -265,13 +385,14 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         readoutText = text;
         readout.textContent = text;
       }
-      if (readout.offsetParent) {
+      if (faceShown && !away && readout.offsetParent) {
         const r = readout.getBoundingClientRect();
-        const left = state.eyes[0];
-        solid.setAttribute("x1", String(r.right + 6));
+        const onRight = r.left > (state.eyes[0].x + state.eyes[1].x) / 2;
+        const target = onRight ? (state.eyes[0].x > state.eyes[1].x ? state.eyes[0] : state.eyes[1]) : state.eyes[0].x < state.eyes[1].x ? state.eyes[0] : state.eyes[1];
+        solid.setAttribute("x1", String(onRight ? r.left - 6 : r.right + 6));
         solid.setAttribute("y1", String(r.top + 7));
-        solid.setAttribute("x2", String(left.x));
-        solid.setAttribute("y2", String(left.y));
+        solid.setAttribute("x2", String(target.x));
+        solid.setAttribute("y2", String(target.y));
         solid.style.opacity = "1";
       } else {
         solid.style.opacity = "0";
@@ -281,39 +402,177 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
 
     const renderer = new BehelitRenderer(canvas, themeRef.current, { reducedMotion, onFrame });
     rendererRef.current = renderer;
-    const resize = new ResizeObserver(() => renderer.resize());
+    const resize = new ResizeObserver(() => {
+      renderer.resize();
+      renderer.syncRect();
+    });
     resize.observe(canvas);
 
-    const onMove = (event: PointerEvent) => {
+    const track = (x: number, y: number, target: string, mouse: boolean) => {
       const now = performance.now();
       const dt = Math.max(1, now - pointer.t);
-      if (pointer.t) pointer.speed = Math.max(pointer.speed, Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) / dt / 100);
+      if (pointer.t) pointer.speed = Math.max(pointer.speed, Math.hypot(x - pointer.x, y - pointer.y) / dt / 100);
       pointer.t = now;
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-      pointer.mouse = event.pointerType === "mouse" || event.pointerType === "pen";
-      const hit = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-gaze]") : null;
-      pointer.target = hit?.dataset.gaze ? `'${hit.dataset.gaze}'` : "None";
-      renderer.setPointer(event.clientX, event.clientY);
+      pointer.x = x;
+      pointer.y = y;
+      pointer.mouse = mouse;
+      pointer.target = target;
+      renderer.setPointer(x, y);
     };
-    const onLeave = () => renderer.clearPointer();
-    const onVisibility = () => (document.hidden ? renderer.stop() : renderer.start());
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onMove, { passive: true });
-    document.documentElement.addEventListener("mouseleave", onLeave);
+    const cleanups: (() => void)[] = [];
+
+    if (!mobile) {
+      let lastPlace: [number, number] | null = null;
+      const place = (px?: number, py?: number) => {
+        const mr = main.getBoundingClientRect();
+        const w = face.offsetWidth;
+        const h = face.offsetHeight;
+        let left: number;
+        let top: number;
+        if (px === undefined || py === undefined) {
+          left = mr.width - w - Math.max(mr.width * 0.1, 170);
+          top = mr.height - h * 0.97;
+        } else {
+          const cx = px - mr.left;
+          const cy = py - mr.top;
+          const toLeft = cx > mr.width / 2;
+          const gap = w * 0.2 + 40;
+          left = toLeft ? cx - gap - w : cx + gap;
+          top = cy - h * 0.55;
+        }
+        left = Math.max(8, Math.min(mr.width - w - 8, left));
+        top = Math.max(-h * 0.06, Math.min(mr.height - h * 0.97, top));
+        face.style.left = `${left}px`;
+        face.style.top = `${top}px`;
+        const rightRoom = mr.width - (left + w * 0.86);
+        if (rightRoom > 180) {
+          readout.style.left = `${left + w * 0.86}px`;
+          readout.style.right = "auto";
+          readout.style.textAlign = "left";
+        } else {
+          readout.style.left = "auto";
+          readout.style.right = `${mr.width - (left + w * 0.14)}px`;
+          readout.style.textAlign = "right";
+        }
+        readout.style.top = `${top + h * 0.5}px`;
+        renderer.syncRect();
+      };
+
+      const hide = () => {
+        if (away) return;
+        away = true;
+        face.classList.add("is-away");
+        readout.classList.add("is-away");
+      };
+
+      const onMove = (event: PointerEvent) => {
+        const mouse = event.pointerType === "mouse" || event.pointerType === "pen";
+        if (away && mouse) {
+          away = false;
+          lastPlace = [event.clientX, event.clientY];
+          place(event.clientX, event.clientY);
+          face.classList.remove("is-away");
+          readout.classList.remove("is-away");
+        }
+        const hit = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-gaze]") : null;
+        track(event.clientX, event.clientY, hit?.dataset.gaze ? `'${hit.dataset.gaze}'` : "None", mouse);
+      };
+      const onLeave = () => renderer.clearPointer();
+      const onResize = () => (lastPlace ? place(...lastPlace) : place());
+
+      userScrollRef.current = hide;
+      place();
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("pointerdown", onMove, { passive: true });
+      window.addEventListener("resize", onResize);
+      document.documentElement.addEventListener("mouseleave", onLeave);
+      renderer.start();
+      cleanups.push(() => {
+        userScrollRef.current = () => {};
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerdown", onMove);
+        window.removeEventListener("resize", onResize);
+        document.documentElement.removeEventListener("mouseleave", onLeave);
+      });
+    } else {
+      const cmdline = cmdlineRef.current;
+      let phase: "code" | "cmd" | "face" = "code";
+      let phaseAt = performance.now();
+      let running = false;
+      let raf = 0;
+
+      const loop = (now: number) => {
+        raf = requestAnimationFrame(loop);
+        if (!liveRef.current) {
+          phaseAt = now;
+          return;
+        }
+        const elapsed = now - phaseAt;
+        if (phase === "code") {
+          if (running && elapsed > 700) {
+            renderer.stop();
+            running = false;
+          }
+          if (elapsed > MOBILE_CODE_MS) {
+            phase = "cmd";
+            phaseAt = now;
+          }
+        } else if (phase === "cmd") {
+          const step = reducedMotion ? 0 : 55;
+          const n = step ? Math.min(FACE_CMD.length, Math.floor(elapsed / step)) : FACE_CMD.length;
+          if (cmdline) cmdline.textContent = FACE_CMD.slice(0, n);
+          if (elapsed > FACE_CMD.length * step + 450) {
+            phase = "face";
+            phaseAt = now;
+            faceShown = true;
+            message = DEFAULT_MESSAGE;
+            shown = 0;
+            root.classList.add("is-face");
+            renderer.resize();
+            renderer.syncRect();
+            if (!running) {
+              renderer.start();
+              running = true;
+            }
+          }
+        } else {
+          const t = elapsed / 1000;
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          const x = vw * (0.5 + 0.34 * Math.sin(t * 0.95) + 0.08 * Math.sin(t * 2.6 + 0.5));
+          const y = vh * (0.36 + 0.26 * Math.sin(t * 0.67 + 1.1) + 0.05 * Math.sin(t * 3.1));
+          track(x, y, "'auto'", true);
+          if (elapsed > MOBILE_FACE_MS) {
+            phase = "code";
+            phaseAt = now;
+            faceShown = false;
+            root.classList.remove("is-face");
+            msg.textContent = "";
+            if (cmdline) cmdline.textContent = "";
+          }
+        }
+      };
+      raf = requestAnimationFrame(loop);
+      cleanups.push(() => {
+        cancelAnimationFrame(raf);
+        root.classList.remove("is-face");
+      });
+    }
+
+    const onVisibility = () => {
+      if (document.hidden) renderer.stop();
+      else if (!mobile || root.classList.contains("is-face")) renderer.start();
+    };
     document.addEventListener("visibilitychange", onVisibility);
-    renderer.start();
     return () => {
+      cleanups.forEach((fn) => fn());
       renderer.stop();
       rendererRef.current = null;
       resize.disconnect();
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerdown", onMove);
-      document.documentElement.removeEventListener("mouseleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, mobile]);
 
   const enter = useCallback(() => {
     if (leavingRef.current) return;
@@ -383,6 +642,13 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (leavingRef.current || pickerOpenRef.current || event.defaultPrevented) return;
+      if (!liveRef.current) {
+        if (event.key === "Enter" || event.key === " " || event.key === "Escape") {
+          event.preventDefault();
+          skipSplashRef.current();
+        }
+        return;
+      }
       if (event.key === ":" || (event.key === ";" && event.shiftKey)) {
         event.preventDefault();
         openPicker();
@@ -421,12 +687,14 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   };
 
   const style = { ...themeStyle(theme), colorScheme: theme.mode } as CSSProperties;
+  const rootClass = ["ti-root", mobile ? "is-mobile" : "is-desktop", booting ? "is-booting" : ""].filter(Boolean).join(" ");
+  const faceCanvas = <canvas ref={canvasRef} className="ti-canvas" />;
 
   return (
     <div
       id="terminal-intro"
       ref={rootRef}
-      className="ti-root"
+      className={rootClass}
       style={style}
       role="dialog"
       aria-modal="true"
@@ -438,14 +706,18 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         closePicker();
       }}
     >
-      <div className="ti-main">
+      <div ref={mainRef} className="ti-main">
         <div ref={paneRef} className="ti-code" aria-hidden="true">
           <div ref={linesRef} className="ti-lines" />
         </div>
-        <div className="ti-face" aria-hidden="true">
-          <canvas ref={canvasRef} className="ti-canvas" />
-          <pre ref={readoutRef} className="ti-readout" />
-        </div>
+        {!mobile && (
+          <>
+            <div ref={faceRef} className="ti-face" aria-hidden="true">
+              {faceCanvas}
+            </div>
+            <pre ref={readoutRef} className="ti-readout" aria-hidden="true" />
+          </>
+        )}
 
         {pickerOpen && (
           <div ref={pickerRef} className="ti-picker" role="dialog" aria-label="Color scheme">
@@ -495,9 +767,20 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       </div>
 
       <div className="ti-status">
+        <span className="ti-mode">NORMAL</span>
         <span ref={pathRef} className="ti-path" />
         <span ref={posRef} className="ti-pos" />
       </div>
+
+      {mobile && (
+        <>
+          <div ref={cmdlineRef} className="ti-cmdline" aria-hidden="true" />
+          <div ref={faceRef} className="ti-stage" aria-hidden="true">
+            {faceCanvas}
+            <pre ref={readoutRef} className="ti-readout" />
+          </div>
+        </>
+      )}
 
       <div className="ti-cmd">
         <span ref={msgRef} className="ti-msg" aria-live="polite" />
@@ -524,6 +807,18 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         <line ref={dashRef} className="ti-dash" />
         <rect ref={boxRef} className="ti-box" width="28" height="18" />
       </svg>
+
+      {booting && (
+        <div ref={splashRef} className="ti-splash" onPointerDown={() => skipSplashRef.current()}>
+          <div className="ti-splash-inner">
+            <span className="ti-splash-title">
+              <span ref={splashTitleRef} />
+              <span className="ti-splash-caret" aria-hidden="true" />
+            </span>
+            <span ref={splashSubRef} className="ti-splash-sub" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
