@@ -29,8 +29,6 @@ const CARET = '<span class="ti-caret"> </span>';
 const FILE_LINES = INTRO_FILES.map((f) => f.code.split("\n").length);
 const DEFAULT_MESSAGE = "the behelit weeps. paras raju — engineer, builder of tools. enter if you dare.";
 const NEAR_MESSAGE = "it sees you.";
-const SPLASH_TITLE = "Paras Portfolio";
-const SPLASH_SUB = "~/paras $ ./boot --summon behelit";
 const FACE_CMD = ":!./face --track";
 const MOBILE_QUERY = "(max-width: 767px)";
 const MOBILE_CODE_MS = 9000;
@@ -76,7 +74,6 @@ function useMobile() {
 export function TerminalIntro({ onDone }: { onDone: () => void }) {
   const reducedMotion = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const mobile = useMobile();
-  const [booting, setBooting] = useState(true);
   const [themeId, setThemeId] = useState(() =>
     loadTerminalTheme(document.documentElement.classList.contains("dark") ? "dark" : "light").id,
   );
@@ -105,15 +102,11 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   const dashRef = useRef<SVGLineElement>(null);
   const solidRef = useRef<SVGLineElement>(null);
   const boxRef = useRef<SVGRectElement>(null);
-  const splashRef = useRef<HTMLDivElement>(null);
-  const splashTitleRef = useRef<HTMLSpanElement>(null);
-  const splashSubRef = useRef<HTMLSpanElement>(null);
   const rendererRef = useRef<BehelitRenderer | null>(null);
   const themeRef = useRef<TerminalTheme>(theme);
   const leavingRef = useRef(false);
   const pickerOpenRef = useRef(false);
-  const liveRef = useRef(false);
-  const skipSplashRef = useRef<() => void>(() => {});
+  const mobileRef = useRef(false);
   const userScrollRef = useRef<() => void>(() => {});
 
   useEffect(() => {
@@ -130,45 +123,8 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   }, []);
 
   useEffect(() => {
-    const splash = splashRef.current;
-    const title = splashTitleRef.current;
-    const sub = splashSubRef.current;
-    if (!splash || !title || !sub) return;
-    const timers: number[] = [];
-    let finished = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      timers.forEach(clearTimeout);
-      liveRef.current = true;
-      setBooting(false);
-    };
-    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
-    skipSplashRef.current = finish;
-
-    if (reducedMotion) {
-      title.textContent = SPLASH_TITLE;
-      sub.textContent = SPLASH_SUB;
-      at(1100, finish);
-    } else {
-      let t = 200;
-      for (let i = 1; i <= SPLASH_TITLE.length; i++) {
-        t += 45 + Math.random() * 45;
-        at(t, () => (title.textContent = SPLASH_TITLE.slice(0, i)));
-      }
-      t += 250;
-      at(t, () => splash.classList.add("is-sub"));
-      for (let i = 1; i <= SPLASH_SUB.length; i++) {
-        t += 12 + Math.random() * 10;
-        at(t, () => (sub.textContent = SPLASH_SUB.slice(0, i)));
-      }
-      t += 550;
-      at(t, () => splash.classList.add("is-out"));
-      t += 600;
-      at(t, finish);
-    }
-    return () => timers.forEach(clearTimeout);
-  }, [reducedMotion]);
+    mobileRef.current = mobile;
+  }, [mobile]);
 
   useEffect(() => {
     const pane = paneRef.current;
@@ -283,26 +239,26 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
     const isCode = (i: number) => i >= 0 && !rows[i].header && rows[i].ln !== null;
 
     const maybeEdit = (done: number, now: number) => {
-      if (done < editCooldown) return false;
+      if (!mobileRef.current || done < editCooldown) return false;
       const row = rows[done];
       const indent = row.text.length - row.text.trimStart().length;
       const body = row.text.length - indent;
       const roll = Math.random();
-      if (roll < 0.045 && body > 10) {
+      if (roll < 0.05 && body > 10) {
         const cut = Math.min(body - 2, 5 + Math.floor(Math.random() * 14));
         edit = { kind: "backspace", row: done, target: row.text.length - cut, pos: row.text.length };
         pauseUntil = now + 380;
-        editCooldown = done + 16;
+        editCooldown = done + 12;
         setMode("NORMAL");
         return true;
       }
-      if (roll < 0.085) {
-        const size = 2 + Math.floor(Math.random() * 3);
+      if (roll < 0.13) {
+        const size = 1 + Math.floor(Math.random() * 2);
         const from = done - size + 1;
         for (let i = from; i <= done; i++) if (!isCode(i) || rows[i].file !== row.file) return false;
         edit = { kind: "select", from, to: done + 1, next: from, at: now + 300 };
         pauseUntil = now + 300;
-        editCooldown = done + 18;
+        editCooldown = done + 12;
         setMode("NORMAL");
         return true;
       }
@@ -374,7 +330,6 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       raf = requestAnimationFrame(tick);
       const dt = Math.min(64, now - last);
       last = now;
-      if (!liveRef.current) return;
 
       if (rowIdx >= rows.length && !edit && now >= pauseUntil && now > manualUntil) restart();
 
@@ -617,10 +572,6 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
 
       const loop = (now: number) => {
         raf = requestAnimationFrame(loop);
-        if (!liveRef.current) {
-          phaseAt = now;
-          return;
-        }
         const elapsed = now - phaseAt;
         if (phase === "code") {
           if (running && elapsed > 700) {
@@ -750,13 +701,6 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (leavingRef.current || pickerOpenRef.current || event.defaultPrevented) return;
-      if (!liveRef.current) {
-        if (event.key === "Enter" || event.key === " " || event.key === "Escape") {
-          event.preventDefault();
-          skipSplashRef.current();
-        }
-        return;
-      }
       if (event.key === ":" || (event.key === ";" && event.shiftKey)) {
         event.preventDefault();
         openPicker();
@@ -795,7 +739,7 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   };
 
   const style = { ...themeStyle(theme), colorScheme: theme.mode } as CSSProperties;
-  const rootClass = ["ti-root", mobile ? "is-mobile" : "is-desktop", booting ? "is-booting" : ""].filter(Boolean).join(" ");
+  const rootClass = ["ti-root", mobile ? "is-mobile" : "is-desktop"].filter(Boolean).join(" ");
   const faceCanvas = <canvas ref={canvasRef} className="ti-canvas" />;
 
   return (
@@ -915,18 +859,6 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         <line ref={dashRef} className="ti-dash" />
         <rect ref={boxRef} className="ti-box" width="28" height="18" />
       </svg>
-
-      {booting && (
-        <div ref={splashRef} className="ti-splash" onPointerDown={() => skipSplashRef.current()}>
-          <div className="ti-splash-inner">
-            <span className="ti-splash-title">
-              <span ref={splashTitleRef} />
-              <span className="ti-splash-caret" aria-hidden="true" />
-            </span>
-            <span ref={splashSubRef} className="ti-splash-sub" />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

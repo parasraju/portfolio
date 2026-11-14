@@ -566,77 +566,6 @@ html.intro-pending body > :not(#terminal-intro) {
 .ti-picker input {
   cursor: text;
 }
-.ti-root > .ti-main,
-.ti-root > .ti-status,
-.ti-root > .ti-cmd,
-.ti-root > .ti-cmdline {
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.ti-root.is-booting > :not(.ti-splash):not(.ti-overlay) {
-  opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-}
-
-.ti-splash {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  padding: 0 4vw;
-  background: var(--t-bg);
-  transition: opacity 0.65s ease;
-}
-.ti-splash-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.1em;
-  transition:
-    transform 0.65s cubic-bezier(0.7, 0, 0.3, 1),
-    filter 0.65s ease;
-}
-.ti-splash-title {
-  display: flex;
-  align-items: center;
-  min-height: 1em;
-  font-size: clamp(30px, 6.4vw, 84px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--t-fn);
-  text-shadow: 0 0 28px color-mix(in srgb, var(--t-fn) 30%, transparent);
-}
-.ti-splash-caret {
-  display: inline-block;
-  width: 0.55em;
-  height: 0.95em;
-  margin-left: 0.08em;
-  background: var(--t-caret);
-  animation: ti-blink 1.05s steps(1) infinite;
-}
-.ti-splash-sub {
-  min-height: 1.32em;
-  font-size: clamp(11px, 1.1vw, 14px);
-  color: var(--t-com);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.ti-splash.is-sub .ti-splash-sub {
-  opacity: 1;
-}
-.ti-splash.is-out {
-  opacity: 0;
-}
-.ti-splash.is-out .ti-splash-inner {
-  transform: scale(1.06) translateY(-14px);
-  filter: blur(6px);
-}
-
 .ti-main {
   position: relative;
   min-height: 0;
@@ -1039,8 +968,7 @@ html.intro-pending body > :not(#terminal-intro) {
   right: 2ch;
 }
 @media (prefers-reduced-motion: reduce) {
-  .ti-caret,
-  .ti-splash-caret {
+  .ti-caret {
     animation: none;
   }
 }

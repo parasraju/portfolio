@@ -49,7 +49,7 @@ export function runBlackHole(root: HTMLElement, theme: TerminalTheme, onOpen: ()
     const streaks = Array.from({ length: count }, () => spawn(false));
 
     const content = Array.from(root.children).filter(
-      (el): el is HTMLElement => el instanceof HTMLElement && el !== canvas && !el.classList.contains("ti-splash"),
+      (el): el is HTMLElement => el instanceof HTMLElement && el !== canvas,
     );
     content.forEach((el) => {
       const r = el.getBoundingClientRect();
