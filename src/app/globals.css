@@ -513,3 +513,336 @@ html.theme-vt::view-transition-new(root) {
     transform: none;
   }
 }
+
+html.intro-pending,
+html.intro-pending body {
+  overflow: hidden;
+  background: var(--intro-bg, #0e0c0c) !important;
+}
+html.intro-pending body > :not(#terminal-intro) {
+  visibility: hidden;
+}
+
+.ti-root {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  background: var(--t-bg);
+  color: var(--t-fg);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 0.92vw, 13.5px);
+  line-height: 1.32;
+  cursor: none;
+  transform-origin: 50% 50%;
+  -webkit-font-smoothing: antialiased;
+}
+.ti-root ::selection {
+  background: color-mix(in srgb, var(--t-accent) 35%, transparent);
+  color: inherit;
+}
+.ti-root button,
+.ti-picker,
+.ti-picker * {
+  cursor: pointer;
+}
+.ti-picker input {
+  cursor: text;
+}
+.ti-main {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 40%);
+  min-height: 0;
+}
+.ti-code {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px 0 24px;
+}
+.ti-l {
+  display: grid;
+  grid-template-columns: 5ch minmax(0, 1fr);
+  column-gap: 2.2ch;
+  padding-right: 2ch;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ti-l[hidden] {
+  display: none;
+}
+.ti-ln {
+  text-align: right;
+  color: var(--t-dim);
+  user-select: none;
+}
+.ti-cur {
+  background: color-mix(in srgb, var(--t-fg) 5%, transparent);
+}
+.ti-cur .ti-ln {
+  color: var(--t-fg);
+}
+.ti-caret {
+  display: inline-block;
+  width: 1ch;
+  background: var(--t-caret);
+  animation: ti-blink 1.05s steps(1) infinite;
+}
+@keyframes ti-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.ti-hd {
+  color: var(--t-com);
+}
+.tk-k {
+  color: var(--t-kw);
+}
+.tk-s {
+  color: var(--t-str);
+}
+.tk-n {
+  color: var(--t-num);
+}
+.tk-f {
+  color: var(--t-fn);
+}
+.tk-c {
+  color: var(--t-com);
+}
+.tk-u {
+  color: var(--t-const);
+}
+.tk-p {
+  color: var(--t-punct);
+}
+.ti-face {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-left: 1px dashed color-mix(in srgb, var(--t-dim) 70%, transparent);
+}
+.ti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ti-readout {
+  position: absolute;
+  top: 9%;
+  left: 14px;
+  margin: 0;
+  font: inherit;
+  font-size: 0.85em;
+  line-height: 1.25;
+  color: var(--t-fn);
+  white-space: pre;
+  pointer-events: none;
+}
+.ti-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 2ch;
+  padding: 1px 2ch;
+  background: color-mix(in srgb, var(--t-accent) 15%, var(--t-bg));
+  color: var(--t-fg);
+  white-space: nowrap;
+}
+.ti-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ti-cmd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2ch;
+  padding: 0.7em 2ch 1em;
+  min-height: 3.2em;
+}
+.ti-msg {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--t-fg);
+}
+.ti-actions {
+  display: flex;
+  align-items: center;
+  gap: 2.4ch;
+  flex-shrink: 0;
+}
+.ti-themebtn,
+.ti-enter {
+  font: inherit;
+  border: 0;
+  background: none;
+  color: var(--t-fg);
+  padding: 1px 0.4ch;
+}
+.ti-prompt {
+  font-weight: 700;
+  color: var(--t-fn);
+}
+.ti-themebtn:hover,
+.ti-themebtn[aria-expanded="true"] {
+  color: var(--t-fn);
+}
+.ti-enter {
+  padding: 1px 1.3ch;
+  background: var(--t-enter-bg);
+  color: var(--t-enter-fg);
+  transition: filter 0.2s ease;
+}
+.ti-enter:hover {
+  filter: brightness(1.08);
+}
+.ti-themebtn:focus-visible,
+.ti-enter:focus-visible {
+  outline: 1px solid var(--t-fn);
+  outline-offset: 3px;
+}
+.ti-picker {
+  position: absolute;
+  left: 4ch;
+  bottom: 14px;
+  z-index: 2;
+  width: min(430px, calc(100% - 6ch));
+  padding: 0.9em 0 1.3em;
+  border: 1px solid color-mix(in srgb, var(--t-fg) 45%, transparent);
+  border-radius: 6px;
+  background: var(--t-bg);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.35);
+}
+.ti-picker-title,
+.ti-picker-count {
+  position: absolute;
+  padding: 0 0.8ch;
+  background: var(--t-bg);
+  color: var(--t-fg);
+  line-height: 1;
+}
+.ti-picker-title {
+  top: -0.5em;
+  left: 2ch;
+}
+.ti-picker-count {
+  right: 7ch;
+  bottom: -0.5em;
+}
+.ti-picker-input {
+  display: flex;
+  gap: 0.2ch;
+  padding: 0 1.5ch 0.7em;
+  color: var(--t-fn);
+}
+.ti-picker-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--t-fn);
+  font: inherit;
+  caret-color: var(--t-fn);
+}
+.ti-picker-list {
+  max-height: calc(8 * 1.32em);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+.ti-picker-list li {
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr) auto;
+  align-items: stretch;
+  padding-right: 18ch;
+  color: var(--t-fg);
+}
+.ti-picker-list li.is-active {
+  background: color-mix(in srgb, var(--t-fg) 9%, transparent);
+}
+.ti-picker-list li.is-active .ti-name {
+  color: var(--t-fn);
+  font-weight: 700;
+}
+.ti-mark {
+  text-align: center;
+  color: var(--t-fn);
+}
+.ti-sw {
+  display: flex;
+}
+.ti-sw i {
+  display: block;
+  width: 9px;
+}
+.ti-empty {
+  padding-left: 3ch;
+  color: var(--t-dim);
+}
+.ti-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+.ti-overlay line,
+.ti-overlay rect {
+  fill: none;
+  stroke: color-mix(in srgb, var(--t-fg) 75%, transparent);
+  stroke-width: 1;
+  transition: opacity 0.25s ease;
+}
+.ti-overlay .ti-dash {
+  stroke-dasharray: 4 4;
+}
+.ti-overlay .ti-solid {
+  stroke: color-mix(in srgb, var(--t-fg) 45%, transparent);
+}
+@media (max-width: 1023px) {
+  .ti-main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 38vh minmax(0, 1fr);
+  }
+  .ti-face {
+    order: -1;
+    border-left: 0;
+    border-bottom: 1px dashed color-mix(in srgb, var(--t-dim) 70%, transparent);
+  }
+  .ti-readout {
+    display: none;
+  }
+  .ti-l {
+    grid-template-columns: 4ch minmax(0, 1fr);
+    column-gap: 1.4ch;
+  }
+  .ti-picker-list li {
+    padding-right: 4ch;
+  }
+  .ti-picker-count {
+    right: 2ch;
+  }
+}
+@media (max-width: 520px) {
+  .ti-msg {
+    display: none;
+  }
+  .ti-cmd {
+    justify-content: flex-end;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ti-caret {
+    animation: none;
+  }
+}

@@ -99,6 +99,10 @@ function revealTo(next: Theme, { x, y }: Origin) {
   });
 }
 
+export function setTheme(next: Theme) {
+  if (getSnapshot() !== next) applyTheme(next);
+}
+
 export function toggleTheme(origin?: Origin) {
   const next: Theme = getSnapshot() === "dark" ? "light" : "dark";
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

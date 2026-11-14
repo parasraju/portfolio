@@ -1,0 +1,357 @@
+export type TerminalTheme = {
+  id: string;
+  mode: "dark" | "light";
+  bg: string;
+  fg: string;
+  dim: string;
+  punct: string;
+  comment: string;
+  keyword: string;
+  string: string;
+  number: string;
+  fn: string;
+  constant: string;
+  caret: string;
+  accent: string;
+  enterBg: string;
+  enterFg: string;
+  face: string;
+  bone: string;
+  iris: string;
+  metal: string;
+};
+
+export const TERMINAL_THEMES: TerminalTheme[] = [
+  {
+    id: "behelit",
+    mode: "dark",
+    bg: "#0e0c0c",
+    fg: "#b8ad9b",
+    dim: "#4f4743",
+    punct: "#6d625b",
+    comment: "#857a6c",
+    keyword: "#cdbb9c",
+    string: "#8f9b70",
+    number: "#c8392f",
+    fn: "#ece1c9",
+    constant: "#6f6760",
+    caret: "#7fb29a",
+    accent: "#c8392f",
+    enterBg: "#ecd9ad",
+    enterFg: "#1a1410",
+    face: "#c21d16",
+    bone: "#efe3c8",
+    iris: "#3657d6",
+    metal: "#b59a58",
+  },
+  {
+    id: "eclipse",
+    mode: "dark",
+    bg: "#0a0809",
+    fg: "#b9a8a1",
+    dim: "#4a3f3d",
+    punct: "#6b5a57",
+    comment: "#6e5d5a",
+    keyword: "#d4a24c",
+    string: "#b5573f",
+    number: "#e2683c",
+    fn: "#f0e2c8",
+    constant: "#7a6a66",
+    caret: "#d4a24c",
+    accent: "#d4a24c",
+    enterBg: "#d4a24c",
+    enterFg: "#140d06",
+    face: "#c0261f",
+    bone: "#f1e4cc",
+    iris: "#2f4fc4",
+    metal: "#d4a24c",
+  },
+  {
+    id: "brand",
+    mode: "dark",
+    bg: "#120a0a",
+    fg: "#c7aaa3",
+    dim: "#53393a",
+    punct: "#7b5552",
+    comment: "#7a5450",
+    keyword: "#e05a4f",
+    string: "#b98b6e",
+    number: "#ff6b57",
+    fn: "#f4d4cb",
+    constant: "#8b6460",
+    caret: "#ff6b57",
+    accent: "#e05a4f",
+    enterBg: "#e05a4f",
+    enterFg: "#120a0a",
+    face: "#d1251d",
+    bone: "#f3e2d6",
+    iris: "#4060d8",
+    metal: "#9c7f6a",
+  },
+  {
+    id: "black-swordsman",
+    mode: "dark",
+    bg: "#0f1011",
+    fg: "#a9adb2",
+    dim: "#43474c",
+    punct: "#62676d",
+    comment: "#5d636a",
+    keyword: "#d0d4d8",
+    string: "#8d9aa6",
+    number: "#c75c4a",
+    fn: "#f0f2f4",
+    constant: "#757b82",
+    caret: "#c7ccd1",
+    accent: "#9aa1a8",
+    enterBg: "#c7ccd1",
+    enterFg: "#0f1011",
+    face: "#a91e18",
+    bone: "#e8e6e1",
+    iris: "#3a5bc9",
+    metal: "#8d949b",
+  },
+  {
+    id: "godhand",
+    mode: "dark",
+    bg: "#0d0a12",
+    fg: "#b3a8c7",
+    dim: "#463e57",
+    punct: "#6a6080",
+    comment: "#615a73",
+    keyword: "#b48ef0",
+    string: "#8fb0a0",
+    number: "#e06c8c",
+    fn: "#ece4ff",
+    constant: "#7c7394",
+    caret: "#b48ef0",
+    accent: "#b48ef0",
+    enterBg: "#b48ef0",
+    enterFg: "#0d0a12",
+    face: "#b8211d",
+    bone: "#efe6f5",
+    iris: "#3d5ee0",
+    metal: "#9b86c4",
+  },
+  {
+    id: "skull-knight",
+    mode: "dark",
+    bg: "#0b0f0f",
+    fg: "#a8b5ae",
+    dim: "#3f4a48",
+    punct: "#5f6d6a",
+    comment: "#586663",
+    keyword: "#d9d2bd",
+    string: "#7fb2a6",
+    number: "#d26b5a",
+    fn: "#eae6d6",
+    constant: "#6d7b78",
+    caret: "#7fb2a6",
+    accent: "#7fb2a6",
+    enterBg: "#d9d2bd",
+    enterFg: "#0b0f0f",
+    face: "#b5231c",
+    bone: "#ece6d4",
+    iris: "#3858c8",
+    metal: "#a9b3a8",
+  },
+  {
+    id: "zodd",
+    mode: "dark",
+    bg: "#110d09",
+    fg: "#bfa98e",
+    dim: "#4d4033",
+    punct: "#76644f",
+    comment: "#6f5f4c",
+    keyword: "#e0954a",
+    string: "#a8a35e",
+    number: "#e2603f",
+    fn: "#f2dfc2",
+    constant: "#857158",
+    caret: "#e0954a",
+    accent: "#e0954a",
+    enterBg: "#e0954a",
+    enterFg: "#110d09",
+    face: "#c42a18",
+    bone: "#f2e2c6",
+    iris: "#3b58c9",
+    metal: "#c08a4a",
+  },
+  {
+    id: "berserker",
+    mode: "dark",
+    bg: "#0c0b0a",
+    fg: "#a59d94",
+    dim: "#433e39",
+    punct: "#635c55",
+    comment: "#5d5650",
+    keyword: "#c94a3d",
+    string: "#8e8574",
+    number: "#f07a3a",
+    fn: "#ded5c8",
+    constant: "#766e66",
+    caret: "#c94a3d",
+    accent: "#c94a3d",
+    enterBg: "#c94a3d",
+    enterFg: "#0c0b0a",
+    face: "#b81f17",
+    bone: "#e6dccb",
+    iris: "#3453c4",
+    metal: "#7d756c",
+  },
+  {
+    id: "elfhelm",
+    mode: "dark",
+    bg: "#0b0f0b",
+    fg: "#a9b59f",
+    dim: "#3e4a3a",
+    punct: "#5f6d59",
+    comment: "#5c6b55",
+    keyword: "#c2d6a0",
+    string: "#8fbf7a",
+    number: "#d98b5f",
+    fn: "#e6efda",
+    constant: "#6f7d68",
+    caret: "#8fbf7a",
+    accent: "#8fbf7a",
+    enterBg: "#c2d6a0",
+    enterFg: "#0b0f0b",
+    face: "#b4241b",
+    bone: "#ebe9d6",
+    iris: "#3655c2",
+    metal: "#a5a37a",
+  },
+  {
+    id: "midland",
+    mode: "dark",
+    bg: "#0b0d12",
+    fg: "#a7b0c2",
+    dim: "#3c4354",
+    punct: "#5d6577",
+    comment: "#5a6274",
+    keyword: "#9db7e8",
+    string: "#a3c2a0",
+    number: "#e48a6a",
+    fn: "#e8ecf5",
+    constant: "#6c7488",
+    caret: "#9db7e8",
+    accent: "#9db7e8",
+    enterBg: "#9db7e8",
+    enterFg: "#0b0d12",
+    face: "#b8231d",
+    bone: "#e9e8ee",
+    iris: "#3d63de",
+    metal: "#9aa3b6",
+  },
+  {
+    id: "nightrider",
+    mode: "dark",
+    bg: "#111111",
+    fg: "#9e9c8a",
+    dim: "#55544c",
+    punct: "#6b6a60",
+    comment: "#8f8c7a",
+    keyword: "#b9b6a1",
+    string: "#7f8f6b",
+    number: "#c4553f",
+    fn: "#ddd9c4",
+    constant: "#6d6c63",
+    caret: "#3f8f78",
+    accent: "#a39c7e",
+    enterBg: "#f0deb0",
+    enterFg: "#141210",
+    face: "#c0221a",
+    bone: "#ece2c6",
+    iris: "#3657d6",
+    metal: "#a39c7e",
+  },
+  {
+    id: "white-hawk",
+    mode: "light",
+    bg: "#f3eee3",
+    fg: "#3d3730",
+    dim: "#b9ae9d",
+    punct: "#8a7f70",
+    comment: "#9a8f80",
+    keyword: "#6b4f2a",
+    string: "#4f6b3a",
+    number: "#b0342a",
+    fn: "#1e1a16",
+    constant: "#7d7264",
+    caret: "#b0342a",
+    accent: "#6b4f2a",
+    enterBg: "#2b241d",
+    enterFg: "#f3eee3",
+    face: "#b8231c",
+    bone: "#f7efe0",
+    iris: "#2c4bc0",
+    metal: "#8c7445",
+  },
+  {
+    id: "falconia",
+    mode: "light",
+    bg: "#fbfaf7",
+    fg: "#3a3d42",
+    dim: "#b6bac0",
+    punct: "#80858d",
+    comment: "#9aa0a8",
+    keyword: "#3f5f9e",
+    string: "#5b7b4a",
+    number: "#b84a32",
+    fn: "#15171a",
+    constant: "#6e747c",
+    caret: "#3f5f9e",
+    accent: "#3f5f9e",
+    enterBg: "#15171a",
+    enterFg: "#fbfaf7",
+    face: "#bf2a20",
+    bone: "#fbf5ea",
+    iris: "#2c4bc0",
+    metal: "#a08a5a",
+  },
+];
+
+const STORAGE_KEY = "terminal-theme";
+
+export const DEFAULT_THEME = { dark: "behelit", light: "white-hawk" } as const;
+
+export function themeById(id: string): TerminalTheme {
+  return TERMINAL_THEMES.find((t) => t.id === id) ?? TERMINAL_THEMES[0];
+}
+
+export function themeSwatches(t: TerminalTheme): string[] {
+  return [t.keyword, t.string, t.number, t.fn, t.comment, t.face];
+}
+
+export function loadTerminalTheme(siteMode: "dark" | "light"): TerminalTheme {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null") as { id?: string } | null;
+    const theme = saved?.id ? TERMINAL_THEMES.find((t) => t.id === saved.id) : undefined;
+    if (theme && theme.mode === siteMode) return theme;
+  } catch {}
+  return themeById(DEFAULT_THEME[siteMode]);
+}
+
+export function saveTerminalTheme(t: TerminalTheme) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: t.id, bg: t.bg, mode: t.mode }));
+  } catch {}
+}
+
+export function themeStyle(t: TerminalTheme): Record<string, string> {
+  return {
+    "--t-bg": t.bg,
+    "--t-fg": t.fg,
+    "--t-dim": t.dim,
+    "--t-punct": t.punct,
+    "--t-com": t.comment,
+    "--t-kw": t.keyword,
+    "--t-str": t.string,
+    "--t-num": t.number,
+    "--t-fn": t.fn,
+    "--t-const": t.constant,
+    "--t-caret": t.caret,
+    "--t-accent": t.accent,
+    "--t-enter-bg": t.enterBg,
+    "--t-enter-fg": t.enterFg,
+  };
+}
