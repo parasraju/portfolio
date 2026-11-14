@@ -774,20 +774,26 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
         {pickerOpen && (
           <div ref={pickerRef} className="ti-picker" role="dialog" aria-label="Color scheme">
             <span className="ti-picker-title">colorscheme</span>
-            <label className="ti-picker-input">
-              <span aria-hidden="true">:</span>
-              <input
-                autoFocus
-                value={query}
-                onChange={(event) => onQuery(event.target.value)}
-                onKeyDown={onPickerKey}
-                spellCheck={false}
-                autoComplete="off"
-                aria-label="Filter color schemes"
-                aria-controls="ti-theme-list"
-                aria-activedescendant={filtered[cursor] ? `ti-theme-${filtered[cursor].id}` : undefined}
-              />
-            </label>
+            {mobile ? (
+              <button type="button" className="ti-picker-close" onClick={closePicker} aria-label="Close color schemes">
+                ✕
+              </button>
+            ) : (
+              <label className="ti-picker-input">
+                <span aria-hidden="true">:</span>
+                <input
+                  autoFocus
+                  value={query}
+                  onChange={(event) => onQuery(event.target.value)}
+                  onKeyDown={onPickerKey}
+                  spellCheck={false}
+                  autoComplete="off"
+                  aria-label="Filter color schemes"
+                  aria-controls="ti-theme-list"
+                  aria-activedescendant={filtered[cursor] ? `ti-theme-${filtered[cursor].id}` : undefined}
+                />
+              </label>
+            )}
             <ul ref={listRef} id="ti-theme-list" role="listbox" className="ti-picker-list">
               {filtered.map((t, i) => (
                 <li
@@ -796,7 +802,7 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
                   role="option"
                   aria-selected={i === cursor}
                   className={i === cursor ? "is-active" : undefined}
-                  onMouseEnter={() => moveCursor(i)}
+                  onMouseEnter={mobile ? undefined : () => moveCursor(i)}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => applyTheme(t)}
                 >
