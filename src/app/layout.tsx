@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { IntroGate } from "@/components/intro/IntroGate";
 import { EntranceTrigger } from "@/components/ui/EntranceTrigger";
+import { INTRO_PENDING_CLASS, INTRO_SESSION_KEY } from "@/lib/intro";
 import { Navbar } from "@/components/ui/Navbar";
 
 const inter = Inter({
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
     "Full stack developer building clean, modern websites and apps with a focus on design, functionality, and attention to detail.",
 };
 
-const bootScript = `(function(){try{var t=localStorage.getItem("theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark");}catch(e){}})();`;
+const bootScript = `(function(){try{var e=document.documentElement;var t=localStorage.getItem("theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)e.classList.add("dark");var s=null;try{s=sessionStorage.getItem("${INTRO_SESSION_KEY}")}catch(x){}if(!s||/[?&]intro(?:[=&]|$)/.test(location.search)){e.classList.add("${INTRO_PENDING_CLASS}");var b=d?"#0e0c0c":"#f3eee3";try{var p=JSON.parse(localStorage.getItem("terminal-theme")||"null");if(p&&p.bg&&p.mode===(d?"dark":"light"))b=p.bg}catch(x){}e.style.setProperty("--intro-bg",b)}}catch(x){}})();`;
 
 export default function RootLayout({
   children,
@@ -47,6 +49,7 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="min-h-full flex flex-col bg-white dark:bg-black text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
+        <IntroGate />
         <EntranceTrigger />
         <Navbar />
         {children}
