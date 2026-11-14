@@ -457,7 +457,7 @@ export class BehelitRenderer {
     if (this.raf) return;
     const loop = (now: number) => {
       this.raf = requestAnimationFrame(loop);
-      if (now - this.last < 1000 / 30) return;
+      if (now - this.last < 1000 / 61) return;
       this.last = now;
       this.draw(now);
     };
@@ -489,7 +489,7 @@ export class BehelitRenderer {
       this.target.y = Math.max(-1, Math.min(1, dy / (window.innerHeight * 0.45)));
       const dist = Math.hypot(dx, dy);
       const near = 1 - smoothstep(this.scale * 0.6, this.scale * 1.6, dist);
-      this.fear += (near - this.fear) * 0.08;
+      this.fear += (near - this.fear) * 0.05;
     } else {
       if (now > this.saccadeAt) {
         this.saccadeAt = now + 900 + Math.random() * 2200;
@@ -499,10 +499,10 @@ export class BehelitRenderer {
       this.fear += (0 - this.fear) * 0.05;
     }
 
-    const eyeLerp = this.opts.reducedMotion ? 1 : 0.28;
+    const eyeLerp = this.opts.reducedMotion ? 1 : 0.16;
     this.gaze.x += (this.target.x - this.gaze.x) * eyeLerp;
     this.gaze.y += (this.target.y - this.gaze.y) * eyeLerp;
-    const headLerp = this.opts.reducedMotion ? 1 : 0.06;
+    const headLerp = this.opts.reducedMotion ? 1 : 0.035;
     this.head.x += (this.target.x - this.head.x) * headLerp;
     this.head.y += (this.target.y - this.head.y) * headLerp;
 
@@ -515,8 +515,8 @@ export class BehelitRenderer {
     this.faceCx = topX - Math.sin(this.tilt) * 1.06 * this.scale;
     this.faceCy = topY + Math.cos(this.tilt) * 1.06 * this.scale;
     if (this.fear > 0.05 && !this.opts.reducedMotion) {
-      this.faceCx += (Math.random() - 0.5) * 2.6 * this.fear;
-      this.faceCy += (Math.random() - 0.5) * 2.6 * this.fear;
+      this.faceCx += Math.sin(t * 23) * 1.1 * this.fear;
+      this.faceCy += Math.sin(t * 29 + 1.3) * 0.9 * this.fear;
     }
     return hasPointer;
   }

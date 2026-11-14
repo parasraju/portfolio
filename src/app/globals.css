@@ -541,6 +541,18 @@ html.intro-pending body > :not(#terminal-intro) {
 }
 .ti-root.is-desktop {
   cursor: none;
+  padding-top: clamp(14px, 3.5vh, 40px);
+  padding-bottom: clamp(6px, 1.5vh, 18px);
+  padding-left: max(6vw, 50vw - 640px);
+  padding-right: max(6vw, 50vw - 640px);
+}
+.is-desktop .ti-main {
+  border: 1px solid color-mix(in srgb, var(--t-dim) 55%, transparent);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+.is-desktop .ti-code {
+  border-radius: 8px 8px 0 0;
 }
 .ti-root ::selection {
   background: color-mix(in srgb, var(--t-accent) 35%, transparent);
@@ -649,7 +661,10 @@ html.intro-pending body > :not(#terminal-intro) {
   padding-right: 2ch;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  transition: background-color 0.12s ease;
+  transition:
+    background-color 0.18s ease,
+    opacity 0.3s ease,
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .ti-l[hidden] {
   display: none;
@@ -676,6 +691,33 @@ html.intro-pending body > :not(#terminal-intro) {
 }
 .ti-ghost:hover {
   opacity: 0.85;
+}
+.ti-l.ti-sel,
+.ti-l.ti-sel:hover {
+  background: color-mix(in srgb, var(--t-fn) 22%, transparent);
+}
+.ti-sel .ti-ln {
+  color: var(--t-fn);
+}
+.ti-l.ti-del {
+  opacity: 0;
+  transform: translateX(-3ch);
+  background: color-mix(in srgb, var(--t-num) 18%, transparent);
+}
+.ti-hole {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ti-root.is-leaving {
+  cursor: default;
+  pointer-events: none;
+}
+.ti-root.is-leaving .ti-overlay {
+  opacity: 0;
 }
 .ti-caret {
   display: inline-block;

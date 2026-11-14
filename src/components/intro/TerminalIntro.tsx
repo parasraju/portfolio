@@ -12,13 +12,19 @@ import {
 import { markIntroEntered } from "@/lib/intro";
 import { setTheme as setSiteTheme } from "@/lib/theme";
 import { BehelitRenderer, type GazeState } from "./behelit";
+import { runBlackHole } from "./blackhole";
 import { escapeHtml, highlightLine, tokensToHtml, type HighlightState, type Token } from "./highlight";
 import { INTRO_FILES } from "./introCode";
 import { TERMINAL_THEMES, loadTerminalTheme, saveTerminalTheme, themeById, themeStyle, themeSwatches, type TerminalTheme } from "./themes";
 
 type Row = { file: number; ln: number | null; tokens: Token[]; text: string; header?: boolean };
+type Edit =
+  | { kind: "backspace"; row: number; target: number; pos: number }
+  | { kind: "select"; from: number; to: number; next: number; at: number }
+  | { kind: "hold"; from: number; to: number; until: number }
+  | { kind: "delete"; from: number; to: number; until: number };
 
-const CHARS_PER_SECOND = 620;
+const CHARS_PER_SECOND = 480;
 const CARET = '<span class="ti-caret"> </span>';
 const FILE_LINES = INTRO_FILES.map((f) => f.code.split("\n").length);
 const DEFAULT_MESSAGE = "the behelit weeps. paras raju — engineer, builder of tools. enter if you dare.";
@@ -89,6 +95,7 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
   const readoutRef = useRef<HTMLPreElement>(null);
   const pathRef = useRef<HTMLSpanElement>(null);
   const posRef = useRef<HTMLSpanElement>(null);
+  const modeRef = useRef<HTMLSpanElement>(null);
   const msgRef = useRef<HTMLSpanElement>(null);
   const cmdlineRef = useRef<HTMLDivElement>(null);
   const enterRef = useRef<HTMLButtonElement>(null);
@@ -219,6 +226,10 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
     let caretRow = -1;
     let caretChars = -1;
     let raf = 0;
+    let lineSpeed = 1;
+    let edit: Edit | null = null;
+    let editCooldown = 14;
+    const modeEl = modeRef.current;
 
     const paintCaret = (i: number, n: number) => {
       if (i === caretRow && n === caretChars) return;
@@ -240,7 +251,7 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
     const restart = () => {
       lines.forEach((el) => {
         el.hidden = true;
-        el.classList.remove("ti-ghost");
+        el.classList.remove("ti-ghost", "ti-sel", "ti-del");
       });
       if (caretRow >= 0) {
         texts[caretRow].innerHTML = full[caretRow];
@@ -252,7 +263,101 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       charIdx = 0;
       scroll = 0;
       revealed = false;
+      edit = null;
+      editCooldown = 14;
       pane.scrollTop = 0;
+    };
+
+    const setMode = (mode: string) => {
+      if (modeEl && modeEl.textContent !== mode) modeEl.textContent = mode;
+    };
+
+    const clearCaret = () => {
+      if (caretRow < 0) return;
+      texts[caretRow].innerHTML = full[caretRow];
+      lines[caretRow].classList.remove("ti-cur");
+      caretRow = -1;
+      caretChars = -1;
+    };
+
+    const isCode = (i: number) => i >= 0 && !rows[i].header && rows[i].ln !== null;
+
+    const maybeEdit = (done: number, now: number) => {
+      if (done < editCooldown) return false;
+      const row = rows[done];
+      const indent = row.text.length - row.text.trimStart().length;
+      const body = row.text.length - indent;
+      const roll = Math.random();
+      if (roll < 0.045 && body > 10) {
+        const cut = Math.min(body - 2, 5 + Math.floor(Math.random() * 14));
+        edit = { kind: "backspace", row: done, target: row.text.length - cut, pos: row.text.length };
+        pauseUntil = now + 380;
+        editCooldown = done + 16;
+        setMode("NORMAL");
+        return true;
+      }
+      if (roll < 0.085) {
+        const size = 2 + Math.floor(Math.random() * 3);
+        const from = done - size + 1;
+        for (let i = from; i <= done; i++) if (!isCode(i) || rows[i].file !== row.file) return false;
+        edit = { kind: "select", from, to: done + 1, next: from, at: now + 300 };
+        pauseUntil = now + 300;
+        editCooldown = done + 18;
+        setMode("NORMAL");
+        return true;
+      }
+      return false;
+    };
+
+    const runEdit = (now: number, dt: number) => {
+      const e = edit;
+      if (!e) return;
+      if (e.kind === "backspace") {
+        setMode("INSERT");
+        e.pos -= (dt * 34) / 1000;
+        const n = Math.max(e.target, Math.ceil(e.pos));
+        paintCaret(e.row, n);
+        setStatus(e.row, n);
+        if (e.pos <= e.target) {
+          rowIdx = e.row;
+          charIdx = e.target;
+          edit = null;
+          pauseUntil = now + 260;
+        }
+        return;
+      }
+      if (e.kind === "select") {
+        setMode("V-LINE");
+        clearCaret();
+        if (now >= e.at) {
+          lines[e.next].classList.add("ti-sel");
+          e.next++;
+          e.at = now + 130;
+          if (e.next >= e.to) edit = { kind: "hold", from: e.from, to: e.to, until: now + 520 };
+        }
+        return;
+      }
+      if (e.kind === "hold") {
+        if (now < e.until) return;
+        setMode("NORMAL");
+        for (let i = e.from; i < e.to; i++) {
+          lines[i].classList.remove("ti-sel");
+          lines[i].classList.add("ti-del");
+        }
+        edit = { kind: "delete", from: e.from, to: e.to, until: now + 320 };
+        return;
+      }
+      if (now < e.until) return;
+      for (let i = e.from; i < e.to; i++) {
+        lines[i].classList.remove("ti-del");
+        if (revealed) lines[i].classList.add("ti-ghost");
+        else lines[i].hidden = true;
+      }
+      rowIdx = e.from;
+      charIdx = 0;
+      edit = null;
+      paintCaret(Math.max(0, e.from - 1), rows[Math.max(0, e.from - 1)].text.length);
+      pauseUntil = now + 420;
     };
 
     const reveal = () => {
@@ -271,30 +376,38 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       last = now;
       if (!liveRef.current) return;
 
-      if (rowIdx >= rows.length && now >= pauseUntil && now > manualUntil) restart();
+      if (rowIdx >= rows.length && !edit && now >= pauseUntil && now > manualUntil) restart();
 
-      let budget = ((dt * CHARS_PER_SECOND) / 1000) * (0.45 + Math.random() * 1.1);
+      if (edit && now >= pauseUntil) runEdit(now, dt);
+
+      let budget = edit ? 0 : ((dt * CHARS_PER_SECOND) / 1000) * lineSpeed;
       while (budget > 0 && rowIdx < rows.length && now >= pauseUntil) {
         const row = rows[rowIdx];
         if (charIdx === 0) {
           showRow(rowIdx);
           charIdx = row.text.length - row.text.trimStart().length;
+          lineSpeed = 0.85 + Math.random() * 0.3;
         }
+        setMode("INSERT");
         const take = Math.min(budget, row.text.length - charIdx);
         charIdx += take;
         budget -= take;
         if (charIdx >= row.text.length) {
           paintCaret(rowIdx, row.text.length);
+          const done = rowIdx;
           rowIdx++;
           charIdx = 0;
           if (row.header) pauseUntil = now + 420;
-          else if (rowIdx >= rows.length) pauseUntil = now + 2600;
-          else if (Math.random() < 0.05) pauseUntil = now + 80 + Math.random() * 260;
+          else if (rowIdx >= rows.length) {
+            pauseUntil = now + 2600;
+            setMode("NORMAL");
+          } else if (maybeEdit(done, now)) break;
+          else if (Math.random() < 0.03) pauseUntil = now + 160 + Math.random() * 220;
           if (budget < 1) break;
         }
       }
 
-      if (rowIdx < rows.length && charIdx > 0) {
+      if (!edit && rowIdx < rows.length && charIdx > 0) {
         paintCaret(rowIdx, Math.floor(charIdx));
         setStatus(rowIdx, Math.floor(charIdx));
       } else if (caretRow >= 0) {
@@ -304,8 +417,8 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       if (now <= manualUntil) {
         scroll = pane.scrollTop;
       } else if (caretRow >= 0) {
-        const target = Math.max(0, lines[caretRow].offsetTop - pane.clientHeight * 0.62);
-        scroll += (target - scroll) * 0.16;
+        const target = Math.max(0, lines[caretRow].offsetTop - pane.clientHeight * 0.6);
+        scroll += (target - scroll) * (1 - Math.exp(-dt / 160));
         pane.scrollTop = scroll;
       }
     };
@@ -578,24 +691,19 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
     if (leavingRef.current) return;
     leavingRef.current = true;
     const root = rootRef.current;
-    markIntroEntered();
     if (!root) {
+      markIntroEntered();
       onDone();
       return;
     }
-    const frames: Keyframe[] = reducedMotion
-      ? [{ opacity: 1 }, { opacity: 0 }]
-      : [
-          { transform: "scale(1, 1)", filter: "brightness(1)", opacity: 1 },
-          { transform: "scale(1, 0.005)", filter: "brightness(2.4)", opacity: 1, offset: 0.55 },
-          { transform: "scale(0, 0.005)", filter: "brightness(3)", opacity: 0 },
-        ];
-    const animation = root.animate(frames, {
-      duration: reducedMotion ? 200 : 760,
-      easing: "cubic-bezier(0.7, 0, 0.3, 1)",
-      fill: "forwards",
-    });
-    animation.finished.then(onDone, onDone);
+    root.classList.add("is-leaving");
+    if (reducedMotion) {
+      markIntroEntered();
+      const animation = root.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: "forwards" });
+      animation.finished.then(onDone, onDone);
+      return;
+    }
+    runBlackHole(root, themeRef.current, markIntroEntered).then(onDone, onDone);
   }, [onDone, reducedMotion]);
 
   const filtered = useMemo(() => {
@@ -767,7 +875,7 @@ export function TerminalIntro({ onDone }: { onDone: () => void }) {
       </div>
 
       <div className="ti-status">
-        <span className="ti-mode">NORMAL</span>
+        <span ref={modeRef} className="ti-mode">NORMAL</span>
         <span ref={pathRef} className="ti-path" />
         <span ref={posRef} className="ti-pos" />
       </div>
