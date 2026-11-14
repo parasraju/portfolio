@@ -37,7 +37,7 @@ async function fetchViaGraphQL(token: string): Promise<PR[]> {
       }
     }
   `;
-  const q = `author:${USERNAME} type:pr`;
+  const q = `author:${USERNAME} type:pr -user:${USERNAME}`;
   const res = await fetch("https://api.github.com/graphql", {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -69,7 +69,7 @@ async function fetchViaRest(token?: string): Promise<PR[]> {
   const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
   if (token) headers.Authorization = `Bearer ${token}`;
   // Search issues for PRs
-  const url = `https://api.github.com/search/issues?q=author:${USERNAME}+type:pr&per_page=100`;
+  const url = `https://api.github.com/search/issues?q=author:${USERNAME}+type:pr+-user:${USERNAME}&per_page=100`;
   const res = await fetch(url, { headers, next: { revalidate: 3600 } });
   if (!res.ok) throw new Error(`Search ${res.status}`);
   const json = (await res.json()) as { items?: unknown[] };
@@ -133,7 +133,7 @@ export async function GET() {
     } else {
       prs = await fetchViaRest();
     }
-    // sort by updatedAt desc
+    prs = prs.filter((pr) => pr.owner.toLowerCase() !== USERNAME);
     prs.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     return NextResponse.json({ prs }, { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" } });
   } catch (e) {
