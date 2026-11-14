@@ -951,18 +951,55 @@ html.intro-pending body > :not(#terminal-intro) {
   padding: 0.4em 1.6ch 1.2em;
 }
 .is-mobile .ti-msg {
-  min-height: 2.64em;
-  white-space: normal;
+  display: none;
 }
 .is-mobile .ti-actions {
   justify-content: flex-end;
 }
 .is-mobile .ti-picker {
-  left: 1.5ch;
-  width: calc(100% - 3ch);
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  bottom: auto;
+  z-index: 10;
+  width: min(300px, calc(100vw - 48px));
+  padding: 1.3em 0 1.2em;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 0 100vmax rgb(0 0 0 / 0.5),
+    0 18px 50px rgb(0 0 0 / 0.45);
+  animation: ti-pop 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes ti-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.96);
+  }
+}
+.ti-picker-close {
+  position: absolute;
+  top: -0.85em;
+  right: 1.5ch;
+  width: 1.9em;
+  height: 1.9em;
+  border: 1px solid color-mix(in srgb, var(--t-fg) 45%, transparent);
+  border-radius: 999px;
+  background: var(--t-bg);
+  color: var(--t-fg);
+  font: inherit;
+  line-height: 1;
+}
+.is-mobile .ti-picker-list {
+  max-height: min(60vh, calc(13 * 2.6em));
+  scrollbar-width: none;
 }
 .is-mobile .ti-picker-list li {
-  padding-right: 4ch;
+  align-items: center;
+  min-height: 2.6em;
+  padding-right: 1.5ch;
+}
+.is-mobile .ti-sw i {
+  height: 1.1em;
 }
 .is-mobile .ti-picker-count {
   right: 2ch;
